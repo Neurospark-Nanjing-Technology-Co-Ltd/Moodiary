@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import Moodiary
 
 // 添加以下导入语句
 import Moodiary
@@ -31,6 +32,9 @@ struct ContentView: View {
                 .tag(2)
         }
         .accentColor(.purple) // 设置选中标签的颜色
+        .onChange(of: selectedTab) { _ in
+            UIImpactFeedbackGenerator(style: .light).impactOccurred() // 添加震动反馈
+        }
     }
 }
 

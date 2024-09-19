@@ -17,101 +17,128 @@ struct TodayView: View {
     @State private var engine: CHHapticEngine?
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                // 顶部日期和铃铛
-                HStack {
-                    Text(formattedDate())
-                        .font(.custom("Avenir-Medium", size: 20))
-                        .foregroundColor(.white)
-                    Spacer()
-                    Image(systemName: "bell")
-                        .font(.title2)
-                        .foregroundColor(.white)
-                }
-                .padding()
-                
-                // 虚拟形象区域
-                ZStack {
-                    // 半透明白色半圆背景
-                    GeometryReader { geometry in
-                        Path { path in
-                            path.addArc(center: CGPoint(x: geometry.size.width / 2, y: 0),
-                                        radius: geometry.size.width * 0.8,
-                                        startAngle: .degrees(0),
-                                        endAngle: .degrees(10),
-                                        clockwise: true)
+        ZStack {
+            GeometryReader { geometry in
+                LinearGradient(gradient: Gradient(colors: [Color(hex: "C5B4E3"), Color(hex: "D8BFD8")]), startPoint: .top, endPoint: .bottom)
+                    .ignoresSafeArea()
+            }
+            .blur(radius: isMenuOpen ? 10 : 0)
+            
+            ScrollView {
+                VStack(spacing: 20) {
+                    // 顶部日期和铃铛
+                    HStack {
+                        Text(formattedDate())
+                            .font(.custom("Avenir-Medium", size: 20))
+                            .foregroundColor(.white)
+                        Spacer()
+                        Image(systemName: "bell")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                    }
+                    .padding()
+                    
+                    // 虚拟形象区域
+                    ZStack {
+                        // 半透明白色半圆背景
+                        GeometryReader { geometry in
+                            Path { path in
+                                path.addArc(center: CGPoint(x: geometry.size.width / 2, y: 0),
+                                            radius: geometry.size.width * 0.8,
+                                            startAngle: .degrees(0),
+                                            endAngle: .degrees(10),
+                                            clockwise: true)
+                            }
+                            .fill(Color.white.opacity(0.2))
                         }
-                        .fill(Color.white.opacity(0.2))
+                        .frame(height: 300)
+                        
+                        VStack {
+                            // 虚拟形象图片
+                            Image("Avatar1")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 150)
+                                .offset(offset)
+                                .onAppear {
+                                    withAnimation(Animation.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
+                                        offset = CGSize(width: 5, height: 5)
+                                    }
+                                }
+                            
+                            Text("马马虎虎")
+                                .font(.custom("Avenir-Black", size: 24))
+                                .foregroundColor(.white)
+                                .padding(.top, 10)
+                        }
                     }
                     .frame(height: 300)
                     
-                    VStack {
-                        // 虚拟形象图片
-                        Image("Avatar1")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 150)
-                            .offset(offset)
-                            .onAppear {
-                                withAnimation(Animation.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
-                                    offset = CGSize(width: 5, height: 5)
-                                }
-                            }
-                        
-                        Text("马马虎虎")
-                            .font(.custom("Avenir-Black", size: 24))
-                            .foregroundColor(.white)
-                            .padding(.top, 10)
-                    }
-                }
-                .frame(height: 300)
-                
-                // 新的记录展示区域
-                RecordsScrollView(records: records, onDelete: deleteRecord)
-                    .frame(height: 100)
-                
-                // 添加叠放小组件
-                StackedWidgetsView()
-                
-                // 添加词云图
-                WordCloudView()
-                    .frame(height: 200)
-                
-                Spacer(minLength: 50) // 为底部留出空间
-            }
-        }
-        .background(
-            LinearGradient(gradient: Gradient(colors: [Color(hex: "C5B4E3"), Color(hex: "D8BFD8")]), startPoint: .top, endPoint: .bottom)
-                .ignoresSafeArea()
-        )
-        .overlay(
-            Group {
-                if showTextInput {
-                    TextInputView(isPresented: $showTextInput, text: $inputText, onSubmit: {
-                        if !inputText.isEmpty {
-                            records.insert(inputText, at: 0)
-                            inputText = ""
-                        }
-                    })
-                    .transition(.move(edge: .top))
+                    // 新的记录展示区域
+                    RecordsScrollView(records: records, onDelete: deleteRecord)
+                        .frame(height: 100)
+                    
+                    // 添加叠放小组件
+                    StackedWidgetsView()
+                    
+                    // 添加词云图
+                    WordCloudView()
+                        .frame(height: 200)
+                    
+                    Spacer(minLength: 50) // 为底部留出空间
                 }
             }
-        )
-        .overlay(
+            .allowsHitTesting(!isMenuOpen)
+            
+            // 浮动按钮和菜单选项
             VStack {
                 Spacer()
                 HStack {
                     Spacer()
-                    FloatingButton(isOpen: $isMenuOpen)
+                    ZStack(alignment: .bottomTrailing) {
+                        if isMenuOpen {
+                            VStack(spacing: 15) {
+                                MenuOption(icon: "camera.fill", text: "拍张照", color: .white) {
+                                    performHapticFeedback()
+                                    // 其他操作...
+                                }
+                                MenuOption(icon: "waveform", text: "说句话", color: .white) {
+                                    // 添加语音功能的操作
+                                    print("语音功能待实现")
+                                }
+                                MenuOption(icon: "square.and.pencil", text: "写点字", color: .white) {
+                                    showTextInput = true
+                                    isMenuOpen = false
+                                }
+                            }
+                            .padding(.vertical, 20)
+                            .padding(.horizontal, 15)
+                            .background(Color(hex: "8A2BE2").opacity(0.8))
+                            .cornerRadius(20)
+                            .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 5)
+                            .padding(.bottom, 70)
+                            .padding(.trailing, 5)
+                            .transition(.scale.combined(with: .opacity))
+                            .frame(width: 165)
+                        }
+                        FloatingButton(isOpen: $isMenuOpen)
+                    }
                 }
-                .padding(.trailing, 30)
-                .padding(.bottom, 30)
+                .padding(.trailing, 30) // 减少右侧padding使整体更靠右
             }
-        )
-        .blur(radius: isMenuOpen || showTextInput ? 10 : 0)
+            
+            // 添加文字输入框
+            if showTextInput {
+                TextInputView(isPresented: $showTextInput, text: $inputText, onSubmit: {
+                    if !inputText.isEmpty {
+                        records.insert(inputText, at: 0)  // 在数组开头插入新记录
+                        inputText = ""
+                    }
+                })
+                .transition(.move(edge: .top))
+            }
+        }
         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isMenuOpen)
-        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: showTextInput)
         .onAppear(perform: prepareHaptics)
         .onTapGesture {
             // 点击空白处时重置所有 RecordBox 的状态

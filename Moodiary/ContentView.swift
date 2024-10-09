@@ -17,19 +17,26 @@ struct ContentView: View {
                 }
                 .tag(0)
             
+            RecordsView()
+                .tabItem {
+                    Image(systemName: "list.bullet")
+                    Text("记录")
+                }
+                .tag(1)
+            
             TrendView()
                 .tabItem {
                     Image(systemName: "chart.line.uptrend.xyaxis")
                     Text("趋势")
                 }
-                .tag(1)
+                .tag(2)
             
             SettingsView()
                 .tabItem {
                     Image(systemName: "gear")
                     Text("设置")
                 }
-                .tag(2)
+                .tag(3)
         }
         .accentColor(.purple) // 设置选中标签的颜色
         .onChange(of: selectedTab) { _ in

@@ -34,8 +34,8 @@ struct ContentView: View {
                 
                 SettingsView()
                     .tabItem {
-                        Image(systemName: selectedTab == 3 ? "gearshape.fill" : "gearshape")
-                        Text("设置")
+                        Image(systemName: selectedTab == 3 ? "person.circle.fill" : "person.circle")
+                        Text("我的")
                     }
                     .tag(3)
             }

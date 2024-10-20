@@ -60,7 +60,7 @@ struct CloudView: View {
 
 struct TodayView: View {
     @State private var showingInputSheet = false
-    @State private var currentThought = "我经由光阴，经由山水，经由乡村和城市，同样我也经由别人，经由一切他者以及由之引生的思绪和梦想而走成了我。那路途中的一切，有些与我擦肩而过从此天各一方，有些便永久驻进我的心魂，雕琢我，塑造我，锤炼我，融入我而成为我。"
+    @State private var currentThought = "我经由光阴，经由山水，经由乡村和城市，同样我也经由别人，经由一切他者以及由之引生的思绪和梦想而走成了我。那路途中的一切，有些与我擦肩而过从此天各一方，有些便永久驻进我的心魂，雕琢我，塑造我，锤炼我融入我而成为我。"
     
     let backgroundGradient = LinearGradient(gradient: Gradient(colors: [Color(hex: "F8F9FA"), Color(hex: "E9ECEF")]), startPoint: .top, endPoint: .bottom)
     let cardGradient = LinearGradient(gradient: Gradient(colors: [Color.white, Color(hex: "F8F9FA")]), startPoint: .top, endPoint: .bottom)
@@ -118,7 +118,7 @@ struct TodayView: View {
     func headerView() -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("你好，Josh!")
+                Text("你好，F1reC!")
                     .font(.title)
                     .fontWeight(.bold)
                 Text("今天是变得更好的好日子")
@@ -151,7 +151,7 @@ struct TodayView: View {
                     .foregroundColor(.primary)
                     .padding(.bottom, 8)
 
-                Text("在这片宁静的蓝色中，让紧张慢慢消散。记住，你很坚强，一切都会好起来的。")
+                Text("在这片宁静的蓝色中，让紧张慢慢消散。记住，你很强，一切都会好起来的。")
                     .font(.system(size: 16, weight: .regular, design: .rounded))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -179,7 +179,7 @@ struct TodayView: View {
         componentView(height: 200) {
             VStack(alignment: .leading, spacing: 8) {
                 Text("此刻随想")
-                    .font(.system(size: 20, weight: .bold, design: .serif))
+                    .font(.system(size: 20, weight: .semibold, design: .serif))
                     .foregroundColor(.primary)
                     .padding(.bottom, 8)
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
@@ -202,7 +202,18 @@ struct TodayView: View {
     
     func wordCloudView() -> some View {
         componentView(height: 300) {
-            WordCloudView()
+            VStack(alignment: .leading, spacing: 10) {
+                Text("心情词云")
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .foregroundColor(.primary)
+                    .padding(.horizontal)
+                    .padding(.top)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                WordCloudView()
+                    .padding(.horizontal)
+                    .padding(.bottom)
+            }
         }
     }
     
@@ -417,3 +428,4 @@ struct InputView: View {
         }
     }
 }
+

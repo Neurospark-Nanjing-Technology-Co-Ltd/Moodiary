@@ -106,7 +106,7 @@ struct TodayView: View {
                     moodView()
                     emotionSpectrumView()
                     quoteView()
-                    wordCloudView()
+                    // wordCloudView()
                 }
                 .padding()
             }

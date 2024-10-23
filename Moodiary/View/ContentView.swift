@@ -1,9 +1,5 @@
 import SwiftUI
 import SwiftData
-import Moodiary
-
-// 添加以下导入语句
-import Moodiary
 
 struct ContentView: View {
     @State private var selectedTab = 0

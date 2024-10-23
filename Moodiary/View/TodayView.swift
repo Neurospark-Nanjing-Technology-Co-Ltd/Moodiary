@@ -59,42 +59,11 @@ struct CloudView: View {
 }
 
 struct TodayView: View {
+    @StateObject private var viewModel = TodayViewModel()
     @State private var showingInputSheet = false
-    @State private var currentThought = "我经由光阴，经由山水，经由乡村和城市，同样我也经由别人，经由一切他者以及由之引生的思绪和梦想而走成了我。那路途中的一切，有些与我擦肩而过从此天各一方，有些便永久驻进我的心魂，雕琢我，塑造我，锤炼我融入我而成为我。"
     
     let backgroundGradient = LinearGradient(gradient: Gradient(colors: [Color(hex: "F8F9FA"), Color(hex: "E9ECEF")]), startPoint: .top, endPoint: .bottom)
     let cardGradient = LinearGradient(gradient: Gradient(colors: [Color.white, Color(hex: "F8F9FA")]), startPoint: .top, endPoint: .bottom)
-    
-    let emotions: [Emotion] = [
-        Emotion(label: "sadness", score: 0.5142688155174255),
-        Emotion(label: "disappointment", score: 0.34392452239990234),
-        Emotion(label: "optimism", score: 0.18355123698711395),
-        Emotion(label: "neutral", score: 0.09777343273162842),
-        Emotion(label: "desire", score: 0.06829964369535446),
-        Emotion(label: "realization", score: 0.033430442214012146),
-        Emotion(label: "caring", score: 0.018700357526540756),
-        Emotion(label: "approval", score: 0.016513975337147713),
-        Emotion(label: "joy", score: 0.015521684661507607),
-        Emotion(label: "disapproval", score: 0.015389608219265938),
-        Emotion(label: "nervousness", score: 0.014421362429857254),
-        Emotion(label: "grief", score: 0.01187789998948574),
-        Emotion(label: "remorse", score: 0.010495388880372047),
-        Emotion(label: "annoyance", score: 0.009701424278318882),
-        Emotion(label: "relief", score: 0.007125277537852526),
-        Emotion(label: "admiration", score: 0.006984887644648552),
-        Emotion(label: "fear", score: 0.006958952639251947),
-        Emotion(label: "love", score: 0.006097970064729452),
-        Emotion(label: "confusion", score: 0.003939824644476175),
-        Emotion(label: "surprise", score: 0.003920560237020254),
-        Emotion(label: "amusement", score: 0.0037957197055220604),
-        Emotion(label: "excitement", score: 0.003023377386853099),
-        Emotion(label: "curiosity", score: 0.0028412635438144207),
-        Emotion(label: "disgust", score: 0.0018109313677996397),
-        Emotion(label: "embarrassment", score: 0.0017967536114156246),
-        Emotion(label: "pride", score: 0.0015587169909849763),
-        Emotion(label: "anger", score: 0.0013835277641192079),
-        Emotion(label: "gratitude", score: 0.0011857559438794851)
-    ]
     
     var body: some View {
         ZStack {
@@ -106,12 +75,14 @@ struct TodayView: View {
                     moodView()
                     emotionSpectrumView()
                     quoteView()
-                    // wordCloudView()
                 }
                 .padding()
             }
             
             addButton()
+        }
+        .onAppear {
+            viewModel.fetchTodayMood()
         }
     }
     
@@ -146,12 +117,12 @@ struct TodayView: View {
                         .clipShape(Circle())
                 }
                 
-                Text("深呼吸，放松心情")
+                Text(viewModel.topEmotion)
                     .font(.system(size: 20, weight: .medium, design: .rounded))
                     .foregroundColor(.primary)
                     .padding(.bottom, 8)
 
-                Text("在这片宁静的蓝色中，让紧张慢慢消散。记住，你很强，一切都会好起来的。")
+                Text(viewModel.comfortLanguage)
                     .font(.system(size: 16, weight: .regular, design: .rounded))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -170,11 +141,12 @@ struct TodayView: View {
                     .padding(.leading)
                     .padding(.bottom, 4)
 
-                EmotionSpectrum(emotions: emotions)
+                EmotionSpectrum(emotions: viewModel.emotions)
                     .padding(.horizontal)
             }
         }
     }
+    
     func quoteView() -> some View {
         componentView(height: 200) {
             VStack(alignment: .leading, spacing: 8) {
@@ -184,7 +156,7 @@ struct TodayView: View {
                     .padding(.bottom, 8)
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
                 
-                Text(currentThought)
+                Text(viewModel.currentThought)
                     .font(.system(size: 16, weight: .regular, design: .serif))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -197,23 +169,6 @@ struct TodayView: View {
             .background(Color.white)
             .cornerRadius(20)
             .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 5)
-        }
-    }
-    
-    func wordCloudView() -> some View {
-        componentView(height: 300) {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("心情词云")
-                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-                    .foregroundColor(.primary)
-                    .padding(.horizontal)
-                    .padding(.top)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-                WordCloudView()
-                    .padding(.horizontal)
-                    .padding(.bottom)
-            }
         }
     }
     
@@ -238,7 +193,7 @@ struct TodayView: View {
             }
         }
         .sheet(isPresented: $showingInputSheet) {
-            InputView(thought: $currentThought, isPresented: $showingInputSheet)
+            InputView(thought: $viewModel.currentThought, isPresented: $showingInputSheet, onSave: viewModel.postTodayMood)
         }
     }
     
@@ -356,11 +311,7 @@ struct EmotionSpectrum: View {
     }
 }
 
-struct Emotion: Identifiable {
-    let id = UUID()
-    let label: String
-    let score: Double
-}
+
 
 extension Color {
     init(hex: String) {
@@ -399,6 +350,7 @@ struct InputView: View {
     @Binding var thought: String
     @Binding var isPresented: Bool
     @State private var tempThought: String = ""
+    var onSave: () -> Void
     
     var body: some View {
         NavigationView {
@@ -419,6 +371,7 @@ struct InputView: View {
                 },
                 trailing: Button("保存") {
                     thought = tempThought
+                    onSave()
                     isPresented = false
                 }
             )
@@ -429,3 +382,47 @@ struct InputView: View {
     }
 }
 
+class TodayViewModel: ObservableObject {
+    @Published var currentThought: String = ""
+    @Published var topEmotion: String = ""
+    @Published var comfortLanguage: String = ""
+    @Published var behavioralGuidance: String = ""
+    @Published var emotions: [Emotion] = []
+    
+    private let todayManager = TodayManager.shared
+    
+    func fetchTodayMood() {
+        todayManager.getTodayMood { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let todayMood):
+                    self?.topEmotion = todayMood.topEmotion
+                    self?.comfortLanguage = todayMood.comfortLanguage
+                    self?.behavioralGuidance = todayMood.behavioralGuidance
+                    if let firstEmotionSet = todayMood.data.first {
+                        self?.emotions = firstEmotionSet.map { Emotion(label: $0.label, score: $0.score) }
+                    }
+                case .failure(let error):
+                    print("Error fetching today's mood: \(error)")
+                    // 处理错误,例如显示一个警告
+                }
+            }
+        }
+    }
+    
+    func postTodayMood() {
+        let emotions = Dictionary(uniqueKeysWithValues: self.emotions.map { ($0.label, $0.score) })
+        todayManager.postTodayMood(text: currentThought, emotions: emotions) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    print("Successfully posted today's mood")
+                    self?.fetchTodayMood() // 重新获取更新后的心情数据
+                case .failure(let error):
+                    print("Error posting today's mood: \(error)")
+                    // 处理错误,例如显示一个警告
+                }
+            }
+        }
+    }
+}

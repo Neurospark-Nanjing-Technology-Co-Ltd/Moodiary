@@ -3,39 +3,43 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		00636A972C9942E7002EB702 /* MoodiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00636A962C9942E7002EB702 /* MoodiaryApp.swift */; };
-		00636A992C9942E7002EB702 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00636A982C9942E7002EB702 /* ContentView.swift */; };
 		00636A9B2C9942E7002EB702 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00636A9A2C9942E7002EB702 /* Item.swift */; };
 		00636A9D2C9942E9002EB702 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00636A9C2C9942E9002EB702 /* Assets.xcassets */; };
 		00636AA02C9942E9002EB702 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00636A9F2C9942E9002EB702 /* Preview Assets.xcassets */; };
-		00636AA72C99460D002EB702 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00636AA62C99460D002EB702 /* TodayView.swift */; };
-		00636AA92C994622002EB702 /* TrendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00636AA82C994622002EB702 /* TrendView.swift */; };
-		00636AAB2C994630002EB702 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00636AAA2C994630002EB702 /* SettingsView.swift */; };
-		00FEEE272CAE8706006B59A5 /* RecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FEEE262CAE86FF006B59A5 /* RecordsView.swift */; };
+		00C643072CC92CAE00156FB1 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 00C643062CC92CAE00156FB1 /* CombineMoya */; };
+		00C643092CC92CAE00156FB1 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 00C643082CC92CAE00156FB1 /* Moya */; };
+		00C6430B2CC92CAE00156FB1 /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 00C6430A2CC92CAE00156FB1 /* ReactiveMoya */; };
+		00C6430D2CC92CAE00156FB1 /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 00C6430C2CC92CAE00156FB1 /* RxMoya */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		00636A932C9942E7002EB702 /* Moodiary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Moodiary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00636A962C9942E7002EB702 /* MoodiaryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodiaryApp.swift; sourceTree = "<group>"; };
-		00636A982C9942E7002EB702 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		00636A9A2C9942E7002EB702 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		00636A9C2C9942E9002EB702 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		00636A9F2C9942E9002EB702 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		00636AA62C99460D002EB702 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
-		00636AA82C994622002EB702 /* TrendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendView.swift; sourceTree = "<group>"; };
-		00636AAA2C994630002EB702 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		00FEEE262CAE86FF006B59A5 /* RecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		00C642F92CC92BEA00156FB1 /* Services */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Services; sourceTree = "<group>"; };
+		00C643002CC92C0B00156FB1 /* View */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = View; sourceTree = "<group>"; };
+		00C643102CC92D2900156FB1 /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		00636A902C9942E7002EB702 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00C643092CC92CAE00156FB1 /* Moya in Frameworks */,
+				00C643072CC92CAE00156FB1 /* CombineMoya in Frameworks */,
+				00C6430D2CC92CAE00156FB1 /* RxMoya in Frameworks */,
+				00C6430B2CC92CAE00156FB1 /* ReactiveMoya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,13 +65,11 @@
 		00636A952C9942E7002EB702 /* Moodiary */ = {
 			isa = PBXGroup;
 			children = (
+				00C642F92CC92BEA00156FB1 /* Services */,
+				00C643102CC92D2900156FB1 /* Models */,
 				00636A962C9942E7002EB702 /* MoodiaryApp.swift */,
-				00636A982C9942E7002EB702 /* ContentView.swift */,
-				00636AA62C99460D002EB702 /* TodayView.swift */,
-				00FEEE262CAE86FF006B59A5 /* RecordsView.swift */,
-				00636AA82C994622002EB702 /* TrendView.swift */,
-				00636AAA2C994630002EB702 /* SettingsView.swift */,
 				00636A9A2C9942E7002EB702 /* Item.swift */,
+				00C643002CC92C0B00156FB1 /* View */,
 				00636A9C2C9942E9002EB702 /* Assets.xcassets */,
 				00636A9E2C9942E9002EB702 /* Preview Content */,
 			);
@@ -96,6 +98,11 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				00C642F92CC92BEA00156FB1 /* Services */,
+				00C643002CC92C0B00156FB1 /* View */,
+				00C643102CC92D2900156FB1 /* Models */,
 			);
 			name = Moodiary;
 			productName = Moodiary;
@@ -126,6 +133,9 @@
 				Base,
 			);
 			mainGroup = 00636A8A2C9942E7002EB702;
+			packageReferences = (
+				00C643052CC92CAE00156FB1 /* XCRemoteSwiftPackageReference "Moya" */,
+			);
 			productRefGroup = 00636A942C9942E7002EB702 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -152,12 +162,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00636A992C9942E7002EB702 /* ContentView.swift in Sources */,
-				00FEEE272CAE8706006B59A5 /* RecordsView.swift in Sources */,
 				00636A9B2C9942E7002EB702 /* Item.swift in Sources */,
-				00636AA92C994622002EB702 /* TrendView.swift in Sources */,
-				00636AAB2C994630002EB702 /* SettingsView.swift in Sources */,
-				00636AA72C99460D002EB702 /* TodayView.swift in Sources */,
 				00636A972C9942E7002EB702 /* MoodiaryApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -366,6 +371,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		00C643052CC92CAE00156FB1 /* XCRemoteSwiftPackageReference "Moya" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Moya/Moya.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 15.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		00C643062CC92CAE00156FB1 /* CombineMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 00C643052CC92CAE00156FB1 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = CombineMoya;
+		};
+		00C643082CC92CAE00156FB1 /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 00C643052CC92CAE00156FB1 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+		00C6430A2CC92CAE00156FB1 /* ReactiveMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 00C643052CC92CAE00156FB1 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = ReactiveMoya;
+		};
+		00C6430C2CC92CAE00156FB1 /* RxMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 00C643052CC92CAE00156FB1 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = RxMoya;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 00636A8B2C9942E7002EB702 /* Project object */;
 }

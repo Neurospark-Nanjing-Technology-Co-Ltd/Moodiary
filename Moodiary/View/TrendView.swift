@@ -9,36 +9,58 @@ import SwiftUI
 import Charts
 
 struct TrendView: View {
-    @State private var selectedPeriod: Period = .week
-    @State private var showDatePicker = false
-
-    enum Period {
-        case week, month
-    }
-
-    let backgroundGradient = LinearGradient(gradient: Gradient(colors: [Color(hex: "F8F9FA"), Color(hex: "E9ECEF")]), startPoint: .top, endPoint: .bottom)
-    let cardGradient = LinearGradient(gradient: Gradient(colors: [Color.white, Color(hex: "F8F9FA")]), startPoint: .top, endPoint: .bottom)
-
+    @State private var selectedPeriod: TrendPeriod = .week
+    @State private var trendData: TrendData?
+    @State private var isLoading = false
+    @State private var errorMessage: String?
+    @State private var showError = false
+    
+    let backgroundGradient = LinearGradient(
+        gradient: Gradient(colors: [Color(hex: "F8F9FA"), Color(hex: "E9ECEF")]),
+        startPoint: .top,
+        endPoint: .bottom
+    )
+    let cardGradient = LinearGradient(
+        gradient: Gradient(colors: [Color.white, Color(hex: "F8F9FA")]),
+        startPoint: .top,
+        endPoint: .bottom
+    )
+    
     var body: some View {
         ZStack {
             backgroundGradient.edgesIgnoringSafeArea(.all)
             
-            ScrollView {
-                VStack(spacing: 20) {
-                    headerView()
-                        .padding(.top)
-                        .padding(.horizontal)
-                    
-                    dateSelectionView()
-                        .padding(.top, 10)
-                    
-                    moodLineChartView()
-                    heatMapView()
-                    wordCloudView()
-                    weekSummaryView()
+            if isLoading {
+                ProgressView()
+                    .scaleEffect(1.2)
+            } else {
+                ScrollView {
+                    VStack(spacing: 20) {
+                        headerView()
+                            .padding(.top)
+                            .padding(.horizontal)
+                        
+                        dateSelectionView()
+                            .padding(.top, 10)
+                        
+                        if let data = trendData {
+                            moodLineChartView(data: data.moodTrend)
+                            heatMapView(data: data.heatMap)
+                            WordCloudView(items: data.wordCloud)
+                            weekSummaryView(summary: data.summary)
+                        }
+                    }
+                    .padding()
                 }
-                .padding()
             }
+        }
+        .onAppear(perform: loadTrendData)
+        .alert(isPresented: $showError) {
+            Alert(
+                title: Text("错误"),
+                message: Text(errorMessage ?? "未知错误"),
+                dismissButton: .default(Text("确定"))
+            )
         }
     }
     
@@ -63,9 +85,10 @@ struct TrendView: View {
         .padding(.horizontal)
     }
     
-    private func periodButton(for period: Period, label: String) -> some View {
+    private func periodButton(for period: TrendPeriod, label: String) -> some View {
         Button(action: {
             selectedPeriod = period
+            loadTrendData()
         }) {
             Text(label)
                 .font(.system(size: 16, weight: .medium, design: .rounded))
@@ -92,13 +115,10 @@ struct TrendView: View {
             startDate = Calendar.current.date(byAdding: .day, value: -29, to: endDate)!
         }
         
-        let startString = formatter.string(from: startDate)
-        let endString = formatter.string(from: endDate)
-        
-        return "\(startString) - \(endString)"
+        return "\(formatter.string(from: startDate)) - \(formatter.string(from: endDate))"
     }
     
-    func moodLineChartView() -> some View {
+    private func moodLineChartView(data: [MoodData]) -> some View {
         componentView(height: 300) {
             VStack(alignment: .leading, spacing: 10) {
                 Text("心情变化")
@@ -107,7 +127,7 @@ struct TrendView: View {
                     .padding(.horizontal)
                 
                 Chart {
-                    ForEach(moodData) { item in
+                    ForEach(data) { item in
                         LineMark(
                             x: .value("Date", item.date),
                             y: .value("Mood", item.mood)
@@ -121,7 +141,7 @@ struct TrendView: View {
         }
     }
     
-    func heatMapView() -> some View {
+    private func heatMapView(data: [HeatMapData]) -> some View {
         componentView(height: 250) {
             VStack(alignment: .leading, spacing: 10) {
                 Text("记录频率")
@@ -129,31 +149,15 @@ struct TrendView: View {
                     .foregroundColor(.primary)
                     .padding(.horizontal)
                 
-                HeatMapCalendarView(data: heatMapData)
+                HeatMapCalendarView(data: data)
                     .frame(height: 180)
                     .padding(.horizontal)
             }
         }
     }
     
-    func wordCloudView() -> some View {
-        componentView(height: 300) {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("心情词云")
-                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-                    .foregroundColor(.primary)
-                    .padding(.horizontal)
-                    .padding(.top)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-                WordCloudView()
-                    .padding(.horizontal)
-                    .padding(.bottom)
-            }
-        }
-    }
     
-    func weekSummaryView() -> some View {
+    private func weekSummaryView(summary: String) -> some View {
         componentView(height: 200) {
             VStack(alignment: .leading, spacing: 10) {
                 Text("本周总结")
@@ -161,7 +165,7 @@ struct TrendView: View {
                     .foregroundColor(.primary)
                     .padding(.horizontal)
                 
-                Text("这周你的心情起起落落,但总体保持积极。记住,生活就像心电图,有起有落才是正常的。保持乐观,相信美好的事情终会发生!")
+                Text(summary)
                     .font(.system(size: 16, weight: .regular, design: .rounded))
                     .foregroundColor(.secondary)
                     .padding(.horizontal)
@@ -171,7 +175,7 @@ struct TrendView: View {
     }
     
     @ViewBuilder
-    func componentView(height: CGFloat, @ViewBuilder content: @escaping () -> some View) -> some View {
+    private func componentView(height: CGFloat, @ViewBuilder content: @escaping () -> some View) -> some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
                 .fill(cardGradient)
@@ -181,20 +185,26 @@ struct TrendView: View {
             content()
         }
     }
+    
+    private func loadTrendData() {
+        isLoading = true
+        errorMessage = nil
+        
+        TrendManager.shared.getTrends(period: selectedPeriod) { result in
+            isLoading = false
+            
+            switch result {
+            case .success(let data):
+                self.trendData = data
+            case .failure(let error):
+                self.errorMessage = error.localizedDescription
+                self.showError = true
+            }
+        }
+    }
 }
 
-struct MoodData: Identifiable {
-    let id = UUID()
-    let date: Date
-    let mood: Double
-}
-
-struct HeatMapData: Identifiable {
-    let id = UUID()
-    let date: Date
-    let count: Int
-}
-
+// MARK: - Supporting Views
 struct HeatMapCalendarView: View {
     let data: [HeatMapData]
     
@@ -224,7 +234,7 @@ struct HeatMapCalendarView: View {
         }
     }
     
-    func colorForCount(_ count: Int) -> Color {
+    private func colorForCount(_ count: Int) -> Color {
         switch count {
         case 0: return Color.gray.opacity(0.1)
         case 1: return Color.blue.opacity(0.2)
@@ -233,15 +243,6 @@ struct HeatMapCalendarView: View {
         default: return Color.blue.opacity(0.8)
         }
     }
-}
-
-// 示例数据
-let moodData: [MoodData] = (0..<30).map { i in
-    MoodData(date: Calendar.current.date(byAdding: .day, value: -i, to: Date())!, mood: Double.random(in: 1...5))
-}
-
-let heatMapData: [HeatMapData] = (0..<28).map { i in
-    HeatMapData(date: Calendar.current.date(byAdding: .day, value: -i, to: Date())!, count: Int.random(in: 0...4))
 }
 
 struct TrendView_Previews: PreviewProvider {

@@ -5,14 +5,6 @@
 //  Created by F1reC on 2024/10/23.
 //
 
-
-//
-//  TodayService.swift
-//  Moodiary
-//
-//  Created by YI HE on 2024/10/22.
-//
-
 import Foundation
 import Moya
 

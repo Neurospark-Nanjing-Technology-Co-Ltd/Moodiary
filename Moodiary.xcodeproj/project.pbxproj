@@ -8,21 +8,23 @@
 
 /* Begin PBXBuildFile section */
 		00636A972C9942E7002EB702 /* MoodiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00636A962C9942E7002EB702 /* MoodiaryApp.swift */; };
-		00636A9B2C9942E7002EB702 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00636A9A2C9942E7002EB702 /* Item.swift */; };
 		00636A9D2C9942E9002EB702 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00636A9C2C9942E9002EB702 /* Assets.xcassets */; };
 		00636AA02C9942E9002EB702 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00636A9F2C9942E9002EB702 /* Preview Assets.xcassets */; };
 		00C643072CC92CAE00156FB1 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 00C643062CC92CAE00156FB1 /* CombineMoya */; };
 		00C643092CC92CAE00156FB1 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 00C643082CC92CAE00156FB1 /* Moya */; };
 		00C6430B2CC92CAE00156FB1 /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 00C6430A2CC92CAE00156FB1 /* ReactiveMoya */; };
 		00C6430D2CC92CAE00156FB1 /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 00C6430C2CC92CAE00156FB1 /* RxMoya */; };
+		E38F72802CCA32FC002F9BE8 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E38F727F2CCA32FC002F9BE8 /* Localizable.xcstrings */; };
+		E38F728B2CCA34EB002F9BE8 /* TodayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38F728A2CCA34EB002F9BE8 /* TodayViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		00636A932C9942E7002EB702 /* Moodiary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Moodiary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00636A962C9942E7002EB702 /* MoodiaryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodiaryApp.swift; sourceTree = "<group>"; };
-		00636A9A2C9942E7002EB702 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		00636A9C2C9942E9002EB702 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		00636A9F2C9942E9002EB702 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E38F727F2CCA32FC002F9BE8 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		E38F728A2CCA34EB002F9BE8 /* TodayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -65,11 +67,12 @@
 		00636A952C9942E7002EB702 /* Moodiary */ = {
 			isa = PBXGroup;
 			children = (
+				E38F72892CCA34E0002F9BE8 /* ViewModel */,
 				00C642F92CC92BEA00156FB1 /* Services */,
+				00C643002CC92C0B00156FB1 /* View */,
 				00C643102CC92D2900156FB1 /* Models */,
 				00636A962C9942E7002EB702 /* MoodiaryApp.swift */,
-				00636A9A2C9942E7002EB702 /* Item.swift */,
-				00C643002CC92C0B00156FB1 /* View */,
+				E38F727F2CCA32FC002F9BE8 /* Localizable.xcstrings */,
 				00636A9C2C9942E9002EB702 /* Assets.xcassets */,
 				00636A9E2C9942E9002EB702 /* Preview Content */,
 			);
@@ -82,6 +85,14 @@
 				00636A9F2C9942E9002EB702 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		E38F72892CCA34E0002F9BE8 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				E38F728A2CCA34EB002F9BE8 /* TodayViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -131,6 +142,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 00636A8A2C9942E7002EB702;
 			packageReferences = (
@@ -152,6 +164,7 @@
 			files = (
 				00636AA02C9942E9002EB702 /* Preview Assets.xcassets in Resources */,
 				00636A9D2C9942E9002EB702 /* Assets.xcassets in Resources */,
+				E38F72802CCA32FC002F9BE8 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -162,7 +175,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00636A9B2C9942E7002EB702 /* Item.swift in Sources */,
+				E38F728B2CCA34EB002F9BE8 /* TodayViewModel.swift in Sources */,
 				00636A972C9942E7002EB702 /* MoodiaryApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -229,6 +242,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -285,6 +299,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

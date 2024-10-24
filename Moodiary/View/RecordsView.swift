@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RecordsView: View {
-    // MARK: - 状态属性
+    
     @State private var selectedDate = Date()
     @State private var showDatePicker = false
     @State private var searchText = ""
@@ -16,10 +16,8 @@ struct RecordsView: View {
     @State private var records: [Record] = []
     @State private var selectedTag: String?
     @State private var errorMessage: String?
-
+    @State private var showError = false
     
-    
-    // MARK: - 过滤后的记录
     private var filteredRecords: [Record] {
         if searchText.isEmpty {
             return records
@@ -29,63 +27,52 @@ struct RecordsView: View {
         }
     }
     
-    let fullText = "我经由光阴，经由山水，经由乡村和城市，同样我也经由别人，经由一切他者以及由之引生的思绪和梦想而走成了我。那路途中的一切，有些与我擦肩而过从此天各一方，有些便永久驻进我的心魂，雕琢我，塑造我，锤炼我融入我而成为我。"
-    
-    // MARK: - 主体视图
     var body: some View {
-        VStack(spacing: 20) {
-            headerView()
-                .padding(.top)
-                .padding(.horizontal)
-            
-            dateSelectionView()
-                .padding(.top, 10)
-            
-            textPreviewView()
-                .padding(.top, 10)
-            
-            ScrollView {
+        NavigationView {
+            ZStack {
                 VStack(spacing: 20) {
-                    // 这里添加其他内容
+                    headerView()
+                        .padding(.horizontal)
+                    
+                    dateSelectionView()
+                        .padding(.top, 10)
+                    
+                    if isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .scaleEffect(1.2)
+                    } else if records.isEmpty {
+                        emptyStateView()
+                    } else {
+                        recordsList()
+                    }
+                    
+                    Spacer()
                 }
-                .padding()
+                .background(Color(UIColor.systemBackground))
+            }
+            .navigationBarTitle("记录", displayMode: .large)
+            .alert(isPresented: $showError) {
+                Alert(
+                    title: Text("错误"),
+                    message: Text(errorMessage ?? "未知错误"),
+                    dismissButton: .default(Text("确定"))
+                )
             }
         }
-        .background(Color(UIColor.systemBackground))
         .onAppear(perform: loadRecords)
-        .edgesIgnoringSafeArea(.bottom)
         .sheet(isPresented: $showDatePicker) {
             DatePicker("选择日期", selection: $selectedDate, displayedComponents: .date)
                 .datePickerStyle(GraphicalDatePickerStyle())
                 .padding()
                 .presentationDetents([.medium])
         }
-    
-    }
-    
-    private func loadRecords() {
-        isLoading = true
-        errorMessage = nil
-        
-        // 模拟网络请求延迟
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            RecordManager.shared.getRecords(date: selectedDate, tag: selectedTag) { result in
-                isLoading = false
-                
-                switch result {
-                case .success(let fetchedRecords):
-                    records = fetchedRecords
-                case .failure(let error):
-                    errorMessage = error.localizedDescription
-                }
-            }
-        }
     }
     
     private func headerView() -> some View {
         HStack {
             Text(formattedDateHeader(selectedDate))
-                .font(.title)
+                .font(.title2)
                 .fontWeight(.bold)
             Spacer()
             searchBar
@@ -102,11 +89,6 @@ struct RecordsView: View {
         .padding(10)
         .background(Color(UIColor.secondarySystemBackground))
         .cornerRadius(20)
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(Color.blue.opacity(0.2), lineWidth: 1)
-        )
-        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
         .frame(width: 180)
     }
     
@@ -119,51 +101,44 @@ struct RecordsView: View {
         .padding()
         .background(Color(UIColor.secondarySystemBackground))
         .cornerRadius(20)
-        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
-        .padding(.horizontal)
     }
     
-    private func textPreviewView() -> some View {
-        Button(action: {
-        }) {
-            VStack(spacing: 10) {
-                EmotionSpectrum(emotions: sampleEmotions)
-                    .frame(height: 30)
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
-                
-                VStack(alignment: .leading, spacing: 8) {
-                    
-                    Text(String(fullText.prefix(50)) + "...")
-                        .font(.system(size: 16, weight: .regular, design: .serif))
-                        .foregroundColor(.secondary)
-                        .lineLimit(2)
-                        .lineSpacing(4)
+    private func recordsList() -> some View {
+        ScrollView {
+            LazyVStack(spacing: 16) {
+                ForEach(filteredRecords, id: \.id) { record in
+                    RecordCard(record: record)
                 }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(LinearGradient(gradient: Gradient(colors: [Color.white, Color(hex: "F8F9FA")]), startPoint: .top, endPoint: .bottom))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 20)
-                    .stroke(Color.blue.opacity(0.1), lineWidth: 1)
-            )
-            .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
+            .padding()
         }
-        .padding(.horizontal)
     }
+    
+    private func emptyStateView() -> some View {
+        VStack(spacing: 20) {
+            Image(systemName: "doc.text.magnifyingglass")
+                .font(.system(size: 50))
+                .foregroundColor(.gray)
+            Text("没有找到记录")
+                .font(.headline)
+            Text("这一天还没有任何记录")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+        }
+        .padding()
+    }
+    
     private func dateButton(for date: Date?, label: String) -> some View {
         Button(action: {
             if let date = date {
                 selectedDate = date
+                loadRecords()
             } else {
                 showDatePicker = true
             }
         }) {
             Text(label)
-                .font(.system(size: 16, weight: .medium, design: .rounded))
+                .font(.system(size: 16, weight: .medium))
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
                 .background(isSelected(date) ? Color.blue.opacity(0.2) : Color.clear)
@@ -175,9 +150,8 @@ struct RecordsView: View {
     private func isSelected(_ date: Date?) -> Bool {
         if let date = date {
             return Calendar.current.isDate(selectedDate, inSameDayAs: date)
-        } else {
-            return isEarlierDate()
         }
+        return isEarlierDate()
     }
     
     private func isEarlierDate() -> Bool {
@@ -191,50 +165,77 @@ struct RecordsView: View {
         return formatter.string(from: date)
     }
     
-    // 示例情绪数据，您可以根据需要调整
-    private let sampleEmotions: [Emotion] = [
-        Emotion(label: "joy", score: 0.3),
-        Emotion(label: "sadness", score: 0.2),
-        Emotion(label: "optimism", score: 0.15),
-        Emotion(label: "neutral", score: 0.1),
-        Emotion(label: "love", score: 0.25)
-    ]
-}
-
-struct FullTextView: View {
-    let text: String
-    @Environment(\.presentationMode) var presentationMode
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            HStack {
-                Spacer()
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
-                        .font(.system(size: 24))
-                }
-            }
+    private func loadRecords() {
+        isLoading = true
+        errorMessage = nil
+        
+        RecordManager.shared.getRecords(date: selectedDate, tag: selectedTag) { result in
+            isLoading = false
             
-            
-            
-            ScrollView {
-                Text(text)
-                    .font(.system(size: 18, weight: .regular, design: .serif))
-                    .foregroundColor(.secondary)
-                    .lineSpacing(6)
+            switch result {
+            case .success(let fetchedRecords):
+                records = fetchedRecords
+            case .failure(let error):
+                errorMessage = error.localizedDescription
+                showError = true
             }
         }
-        .padding()
-        .background(Color(UIColor.systemBackground))
-        .cornerRadius(20)
-        .shadow(color: Color.black.opacity(0.1), radius: 20, x: 0, y: 10)
     }
 }
 
-
+struct RecordCard: View {
+    let record: Record
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Emotions View
+            EmotionSpectrum(emotions: record.emotions)
+                .frame(height: 30)
+                .clipShape(RoundedRectangle(cornerRadius: 15))
+            
+            // Content Preview
+            Text(record.content)
+                .font(.system(size: 16, weight: .regular, design: .serif))
+                .foregroundColor(.secondary)
+                .lineLimit(3)
+                .lineSpacing(4)
+            
+            // Tags
+            if let tags = record.tags, !tags.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        ForEach(tags, id: \.self) { tag in
+                            Text(tag)
+                                .font(.caption)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Color.blue.opacity(0.1))
+                                .foregroundColor(.blue)
+                                .cornerRadius(8)
+                        }
+                    }
+                }
+            }
+            
+            // Timestamp
+            Text(formattedDate(record.createdAt))
+                .font(.caption)
+                .foregroundColor(.gray)
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color(UIColor.secondarySystemBackground))
+        )
+    }
+    
+    private func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "zh_CN")
+        formatter.dateFormat = "yyyy年M月d日 HH:mm"
+        return formatter.string(from: date)
+    }
+}
 
 
 struct RecordsView_Previews: PreviewProvider {
@@ -242,3 +243,4 @@ struct RecordsView_Previews: PreviewProvider {
         RecordsView()
     }
 }
+

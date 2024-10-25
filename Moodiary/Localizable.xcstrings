@@ -1,7 +1,16 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "【未定事件簿】未名晶片×100" : {
+
+    },
     "%lld" : {
+
+    },
+    "3000 米游币" : {
+
+    },
+    "3714" : {
 
     },
     "Confirm Password" : {
@@ -70,6 +79,12 @@
         }
       }
     },
+    "兑换中心" : {
+
+    },
+    "即将开放" : {
+
+    },
     "取消" : {
       "localizations" : {
         "en" : {
@@ -81,6 +96,7 @@
       }
     },
     "商城" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -101,6 +117,7 @@
       }
     },
     "好友" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -111,6 +128,7 @@
       }
     },
     "好友设置" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -119,6 +137,9 @@
           }
         }
       }
+    },
+    "库存300" : {
+
     },
     "心情变化" : {
       "localizations" : {
@@ -160,6 +181,9 @@
         }
       }
     },
+    "明细" : {
+
+    },
     "本周总结" : {
       "localizations" : {
         "en" : {
@@ -169,6 +193,9 @@
           }
         }
       }
+    },
+    "本月限购 0/1" : {
+
     },
     "此刻" : {
       "localizations" : {
@@ -229,6 +256,9 @@
           }
         }
       }
+    },
+    "获取米游币" : {
+
     },
     "记录" : {
       "localizations" : {

@@ -3,8 +3,24 @@ import SwiftData
 
 struct ContentView: View {
     @State private var selectedTab = 0
+    @State private var isLoggedIn = false
+    @Environment(\.modelContext) private var modelContext
+    @Query private var users: [UserModel]
     
     var body: some View {
+        Group {
+            if isLoggedIn {
+                mainView
+            } else {
+                LoginView(isLoggedIn: $isLoggedIn)
+            }
+        }
+        .onAppear {
+            checkLoginStatus()
+        }
+    }
+    
+    private var mainView: some View {
         ZStack {
             TabView(selection: $selectedTab) {
                 TodayView()
@@ -35,12 +51,17 @@ struct ContentView: View {
                     }
                     .tag(3)
             }
-            .accentColor(Color(hex: "4A90E2")) // 使用与 TodayView 相协调的蓝色
+            .accentColor(Color(hex: "4A90E2"))
             .onChange(of: selectedTab) { _ in
                 let impact = UIImpactFeedbackGenerator(style: .soft)
                 impact.impactOccurred()
             }
-            
+        }
+    }
+    
+    private func checkLoginStatus() {
+        if !users.isEmpty {
+            isLoggedIn = true
         }
     }
 }

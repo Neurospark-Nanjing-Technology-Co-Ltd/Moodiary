@@ -10,20 +10,20 @@ import Moya
 
 enum TodayService {
     case getTodayMood
-    case postTodayMood(text: String, emotions: [String: Double])
+    case postTodayMood(content: String)
 }
 
 extension TodayService: TargetType {
     var baseURL: URL {
-        return URL(string: "https://testflow.simolark.com:8080")!
+        return URL(string: "http://54.255.253.1:8080")!
     }
     
     var path: String {
         switch self {
         case .getTodayMood:
-            return "/today/mood"
+            return "/Record/latest"
         case .postTodayMood:
-            return "/today/mood"
+            return "/Record/add"
         }
     }
     
@@ -40,22 +40,20 @@ extension TodayService: TargetType {
         switch self {
         case .getTodayMood:
             return .requestPlain
-        case let .postTodayMood(text, emotions):
+        case let .postTodayMood(content):
             return .requestParameters(
-                parameters: ["text": text, "emotions": emotions],
-                encoding: JSONEncoding.default
+                parameters: ["content": content, "title": "1"],
+                encoding: URLEncoding.default
             )
         }
     }
     
     var headers: [String: String]? {
-        if let token = UserDefaults.standard.string(forKey: "userToken") {
-            return [
-                "Content-type": "application/json",
-                "Authorization": "Bearer \(token)"
-            ]
-        }
-        return ["Content-type": "application/json"]
+        let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOnsiaWQiOjgsImVtYWlsIjoiMTQ4OTQ3Mjk4OUBxcS5jb20ifSwiZXhwIjoxNzI5OTEzMTAzfQ.Ys7hoRxFu_D7UEJtnWVWvOHc5jvX-uL0iyCvJO25aQI"
+        return [
+            "Content-type": "application/x-www-form-urlencoded",
+            "Authorization": "Bearer \(token)"
+        ]
     }
 }
 
@@ -85,21 +83,19 @@ class TodayManager {
         }
     }
     
-    func postTodayMood(text: String, emotions: [String: Double], completion: @escaping (Result<Void, Error>) -> Void) {
-        provider.request(.postTodayMood(text: text, emotions: emotions)) { result in
+    func postTodayMood(content: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        provider.request(.postTodayMood(content: content)) { [weak self] result in
             switch result {
-            case let .success(response):
-                do {
-                    let todayMoodResponse = try JSONDecoder().decode(TodayMoodResponse.self, from: response.data)
-                    if todayMoodResponse.code == 0 && todayMoodResponse.message == "Success" {
+            case .success(_):
+                self?.getTodayMood { latestResult in
+                    switch latestResult {
+                    case .success(let latestMood):
                         completion(.success(()))
-                    } else {
-                        completion(.failure(NSError(domain: "", code: todayMoodResponse.code, userInfo: [NSLocalizedDescriptionKey: todayMoodResponse.message])))
+                    case .failure(let error):
+                        completion(.failure(error))
                     }
-                } catch {
-                    completion(.failure(error))
                 }
-            case let .failure(error):
+            case .failure(let error):
                 completion(.failure(error))
             }
         }
@@ -114,20 +110,14 @@ struct TodayMoodResponse: Codable {
 }
 
 struct TodayMood: Codable {
-    struct TodayEmotion: Codable {
-        let label: String
-        let score: Double
-    }
-    
-    let data: [[TodayEmotion]]
-    let topEmotion: String
-    let comfortLanguage: String
-    let behavioralGuidance: String
-    
-    enum CodingKeys: String, CodingKey {
-        case data
-        case topEmotion = "top_emotion"
-        case comfortLanguage = "comfort_language"
-        case behavioralGuidance = "behavioral_guidance"
-    }
+    let recordId: Int
+    let userId: Int
+    let content: String
+    let mood: String?
+    let moodJson: String?
+    let topEmotion: String?
+    let comfortLanguage: String?
+    let behavioralGuidance: String?
+    let createdAt: String
+    let updatedAt: String
 }

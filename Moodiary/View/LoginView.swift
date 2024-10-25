@@ -10,6 +10,7 @@ import SwiftData
 
 struct LoginView: View {
     @Environment(\.modelContext) private var modelContext
+    @Binding var isLoggedIn: Bool
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var showError: Bool = false
@@ -95,8 +96,7 @@ struct LoginView: View {
                 switch result {
                 case .success(let token):
                     self.syncUser(email: self.email, password: self.password, token: token)
-                    self.showError(message: "Login successful!")
-                    // Here you would typically navigate to the main app view
+                    self.isLoggedIn = true  // 立即更新登录状态
                 case .failure(let error):
                     self.showError(message: "Login failed: \(error.localizedDescription)")
                 }
@@ -110,15 +110,18 @@ struct LoginView: View {
     }
     
     private func syncUser(email: String, password: String, token: String) {
-        withAnimation {
-            let localUser = UserModel(email: email, username: email, password: password, token: token)
-            modelContext.insert(localUser)
+        let localUser = UserModel(email: email, username: email, password: password, token: token)
+        modelContext.insert(localUser)
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to save user: \(error)")
         }
     }
 }
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView()
+        LoginView(isLoggedIn: .constant(false))
     }
 }

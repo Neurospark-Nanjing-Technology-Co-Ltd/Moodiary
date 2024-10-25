@@ -10,6 +10,7 @@ import SwiftUI
 struct TodayView: View {
     @StateObject private var viewModel = TodayViewModel()
     @State private var showingInputSheet = false
+    @State private var userInput = ""  // 新增状态变量来存储用户输入
     
     let backgroundGradient = LinearGradient(gradient: Gradient(colors: [Color(hex: "F8F9FA"), Color(hex: "E9ECEF")]), startPoint: .top, endPoint: .bottom)
     let cardGradient = LinearGradient(gradient: Gradient(colors: [Color.white, Color(hex: "F8F9FA")]), startPoint: .top, endPoint: .bottom)
@@ -88,10 +89,8 @@ struct TodayView: View {
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .foregroundColor(.primary)
                     .padding(.leading)
-                    .padding(.bottom, 4)
-
+                
                 EmotionSpectrum(emotions: viewModel.emotions)
-                    .padding(.horizontal)
             }
         }
     }
@@ -142,7 +141,10 @@ struct TodayView: View {
             }
         }
         .sheet(isPresented: $showingInputSheet) {
-            InputView(thought: $viewModel.currentThought, isPresented: $showingInputSheet, onSave: viewModel.postTodayMood)
+            InputView(thought: $userInput, isPresented: $showingInputSheet, onSave: {
+                viewModel.postTodayMood(content: userInput)
+                userInput = ""  // 清空输入
+            })
         }
     }
     

@@ -16,7 +16,7 @@ enum AuthService {
 
 extension AuthService: TargetType {
     var baseURL: URL {
-        return URL(string: "https://testflow.simolark.com:8080")!
+        return URL(string: "http://54.255.253.1:8080")!
     }
     
     var path: String {

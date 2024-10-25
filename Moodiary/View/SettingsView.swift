@@ -35,7 +35,7 @@ struct SettingsView: View {
     private var settingsOptions: [(imageName: String, title: String, destination: AnyView)] {
         [
             ("person.circle", "账户", AnyView(AccountSettingsView())),
-            ("person.2", "好友", AnyView(FriendsSettingsView())),
+            ("person.2", "好友", AnyView(FriendsView())),  // 修改这一行
             ("cart", "商城", AnyView(StoreView())),
             ("globe", "多语言", AnyView(LanguageSettingsView())),
             ("doc.text", "用户协议", AnyView(UserAgreementView()))
@@ -79,19 +79,14 @@ struct AccountSettingsView: View {
     }
 }
 
-struct FriendsSettingsView: View {
+struct FriendsView: View {
     var body: some View {
-        Text("好友设置")
-            .navigationTitle("好友")
+        Text("账户设置")
+            .navigationTitle("账户")
     }
 }
 
-struct StoreView: View {
-    var body: some View {
-        Text("商城")
-            .navigationTitle("商城")
-    }
-}
+
 
 struct LanguageSettingsView: View {
     var body: some View {
@@ -112,4 +107,3 @@ struct SettingsView_Previews: PreviewProvider {
         SettingsView()
     }
 }
-

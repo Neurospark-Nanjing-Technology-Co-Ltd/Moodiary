@@ -41,94 +41,304 @@
 
     },
     "今天是变得更好的好日子" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today is a good day to get better"
+          }
+        }
+      }
     },
     "你好，F1reC!" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hello， F1reC"
+          }
+        }
+      }
     },
     "保存" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "save"
+          }
+        }
+      }
     },
     "取消" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "cancel"
+          }
+        }
+      }
     },
     "商城" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mall"
+          }
+        }
+      }
     },
     "多语言" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "language"
+          }
+        }
+      }
     },
     "好友" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "friends"
+          }
+        }
+      }
     },
     "好友设置" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "friends settings"
+          }
+        }
+      }
     },
     "心情变化" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mood changes"
+          }
+        }
+      }
     },
     "心情色谱" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mood spectrum"
+          }
+        }
+      }
     },
     "我的" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "me"
+          }
+        }
+      }
     },
     "搜索..." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "search..."
+          }
+        }
+      }
     },
     "本周总结" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "weekly summary"
+          }
+        }
+      }
     },
     "此刻" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "now"
+          }
+        }
+      }
     },
     "此刻随想" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "moment"
+          }
+        }
+      }
     },
     "没有找到记录" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No record found"
+          }
+        }
+      }
     },
     "用户协议" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "user agreement"
+          }
+        }
+      }
     },
     "用户协议内容" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "content"
+          }
+        }
+      }
     },
     "确定" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "confirm"
+          }
+        }
+      }
     },
     "记录" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "record"
+          }
+        }
+      }
     },
     "记录心情的色彩" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MoodPalate"
+          }
+        }
+      }
     },
     "记录频率" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "recording frequency"
+          }
+        }
+      }
     },
     "语言设置" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "language settings"
+          }
+        }
+      }
     },
     "账户" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "account"
+          }
+        }
+      }
     },
     "账户设置" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "account settings"
+          }
+        }
+      }
     },
     "趋势" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "trends"
+          }
+        }
+      }
     },
     "输入你的随想" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "enter your thoughts"
+          }
+        }
+      }
     },
     "这一天还没有任何记录" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no records for this day yet"
+          }
+        }
+      }
     },
     "选择日期" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "select dates"
+          }
+        }
+      }
     },
     "错误" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "error"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

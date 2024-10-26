@@ -8,49 +8,68 @@
 
 import Foundation
 import Moya
+import SwiftData
+import SwiftUI
+
 
 enum RecordService {
     case getRecords(date: Date, tag: String?)
+    case createRecord(content: String, title: String)
 }
 
 extension RecordService: TargetType {
     var baseURL: URL {
-        return URL(string: "https://testflow.simolark.com:8080")!
+        return URL(string: "http://54.255.253.1:8080")!
     }
     
     var path: String {
-        return "/records"
+        switch self {
+        case .getRecords:
+            return "/Record/History"
+        case .createRecord:
+            return "/Record/add"
+        }
     }
     
     var method: Moya.Method {
-        return .get
+        switch self {
+        case .getRecords:
+            return .get
+        case .createRecord:
+            return .post
+        }
     }
     
     var task: Task {
         switch self {
         case let .getRecords(date, tag):
-            var parameters: [String: Any] = [
-                "date": formatDate(date)
+            var formData: [MultipartFormData] = [
+                MultipartFormData(provider: .data(formatDate(date).data(using: .utf8)!), name: "date")
             ]
+            
             if let tag = tag {
-                parameters["tag"] = tag
+                formData.append(MultipartFormData(provider: .data(tag.data(using: .utf8)!), name: "tag"))
             }
-            return .requestParameters(
-                parameters: parameters,
-                encoding: URLEncoding.default
-            )
+            
+            return .uploadMultipart(formData)
+            
+        case let .createRecord(content, title):
+            let formData: [MultipartFormData] = [
+                MultipartFormData(provider: .data(content.data(using: .utf8)!), name: "content"),
+                MultipartFormData(provider: .data(title.data(using: .utf8)!), name: "title")
+            ]
+            return .uploadMultipart(formData)
         }
     }
     
     var headers: [String: String]? {
-        // 如果需要token验证，在这里添加
-        if let token = UserDefaults.standard.string(forKey: "userToken") {
-            return [
-                "Content-type": "application/json",
-                "Authorization": "Bearer \(token)"
-            ]
+        var headers: [String: String] = [:]
+        
+        if let token = ModelContextManager.shared.getToken() {
+            headers["Authorization"] = token
         }
-        return ["Content-type": "application/json"]
+        
+        return headers
     }
     
     private func formatDate(_ date: Date) -> String {
@@ -58,9 +77,12 @@ extension RecordService: TargetType {
         formatter.dateFormat = "yyyy-MM-dd"
         return formatter.string(from: date)
     }
+    
+    
 }
 
 class RecordManager {
+    
     static let shared = RecordManager()
     private let provider = MoyaProvider<RecordService>()
     
@@ -78,6 +100,7 @@ class RecordManager {
                         completion(.failure(NSError(domain: "", code: recordResponse.code, userInfo: [NSLocalizedDescriptionKey: recordResponse.message])))
                     }
                 } catch {
+                    print("Decoding error: \(error)")  // 添加更详细的错误日志
                     completion(.failure(error))
                 }
             case let .failure(error):
@@ -85,4 +108,29 @@ class RecordManager {
             }
         }
     }
+    
+    func createRecord(content: String, title: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        provider.request(.createRecord(content: content, title: title)) { result in
+            switch result {
+            case let .success(response):
+                do {
+                    let recordResponse = try JSONDecoder().decode(BaseResponse.self, from: response.data)
+                    if recordResponse.code == 0 && recordResponse.message == "Success" {
+                        completion(.success(()))
+                    } else {
+                        completion(.failure(NSError(domain: "", code: recordResponse.code, userInfo: [NSLocalizedDescriptionKey: recordResponse.message])))
+                    }
+                } catch {
+                    completion(.failure(error))
+                }
+            case let .failure(error):
+                completion(.failure(error))
+            }
+        }
+    }
+}
+
+struct BaseResponse: Codable {
+    let code: Int
+    let message: String
 }

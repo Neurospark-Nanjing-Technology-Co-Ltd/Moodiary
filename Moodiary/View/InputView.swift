@@ -13,20 +13,18 @@ struct InputView: View {
     @Binding var isPresented: Bool
     @FocusState private var isFocused: Bool
     @State private var keyboardHeight: CGFloat = 0
-    var onSave: () -> Void
+    @State private var isSaving: Bool = false
+    let onSave: (String) -> Void
     
     var body: some View {
         ZStack(alignment: .bottom) {
-            // 半透明背景，点击退出
             Color.black.opacity(0.3)
                 .edgesIgnoringSafeArea(.all)
                 .onTapGesture {
                     isPresented = false
                 }
             
-            // 输入区域容器
             VStack(spacing: 0) {
-                // 输入区域
                 ZStack(alignment: .topLeading) {
                     if thought.isEmpty {
                         Text(" 现在的想法是...")
@@ -45,9 +43,7 @@ struct InputView: View {
                 .frame(height: 150)
                 .padding(.top, 8)
                 
-                // 底部工具栏
                 HStack(spacing: 20) {
-                    // 左侧工具
                     HStack(spacing: 16) {
                         Button(action: { /* Handle hashtag */ }) {
                             Image(systemName: "number")
@@ -78,18 +74,27 @@ struct InputView: View {
                     
                     Spacer()
                     
-                    // 发送按钮
                     Button(action: {
-                        onSave()
-                        isPresented = false
+                        guard !thought.isEmpty else { return }
+                        isSaving = true
+                        onSave(thought)
                     }) {
-                        Image(systemName: "paperplane.fill")
-                            .font(.system(size: 16))
-                            .foregroundColor(.white)
-                            .frame(width: 32, height: 32)
-                            .background(thought.isEmpty ? Color.gray : Color.blue)
-                            .clipShape(Circle())
+                        if isSaving {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .frame(width: 32, height: 32)
+                                .background(Color.blue)
+                                .clipShape(Circle())
+                        } else {
+                            Image(systemName: "paperplane.fill")
+                                .font(.system(size: 16))
+                                .foregroundColor(.white)
+                                .frame(width: 32, height: 32)
+                                .background(thought.isEmpty ? Color.gray : Color.blue)
+                                .clipShape(Circle())
+                        }
                     }
+                    .disabled(thought.isEmpty || isSaving)
                 }
                 .padding(.horizontal)
                 .padding(.vertical, 8)
@@ -97,7 +102,7 @@ struct InputView: View {
                 .background(Color(UIColor.systemGray6))
             }
             .background(Color(UIColor.systemBackground))
-            .clipShape(CustomRoundedCorners(radius: 16, corners: [.topLeft, .topRight])) // 使用自定义圆角形状
+            .clipShape(CustomRoundedCorners(radius: 16, corners: [.topLeft, .topRight]))
             .offset(y: keyboardHeight > 0 ? -keyboardHeight + 8 : 0)
         }
         .edgesIgnoringSafeArea(.all)
@@ -111,7 +116,6 @@ struct InputView: View {
         }
     }
     
-    // 键盘通知相关代码保持不变...
     private func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(
             forName: UIResponder.keyboardWillShowNotification,

@@ -10,40 +10,38 @@ class TodayViewModel: ObservableObject {
     @Published var topEmotion: String = ""
     @Published var comfortLanguage: String = ""
     @Published var currentThought: String = ""
-    @Published var emotions: [Emotion] = []  // 添加这行
+    @Published var emotions: [MoodLabel] = []
+    @Published var isLoading: Bool = false
     
     private let todayManager = TodayManager.shared
     
     func fetchTodayMood() {
+        isLoading = true
+        
         todayManager.getTodayMood { [weak self] result in
             DispatchQueue.main.async {
+                self?.isLoading = false
+                
                 switch result {
                 case .success(let todayMood):
-                    self?.topEmotion = todayMood.topEmotion ?? ""
-                    self?.comfortLanguage = todayMood.comfortLanguage ?? ""
+                    self?.topEmotion = todayMood.topEmotion ?? "平静"
+                    self?.comfortLanguage = todayMood.comfortLanguage ?? "让我们开始记录今天的心情吧"
                     self?.currentThought = todayMood.content
-                    // 解析 moodJson 并更新 emotions
-                    if let moodJson = todayMood.moodJson,
-                       let data = moodJson.data(using: .utf8),
-                       let jsonResult = try? JSONDecoder().decode([String: Double].self, from: data) {
-                        self?.emotions = jsonResult.map { Emotion(label: $0.key, score: $0.value) }
+                    
+                    // 直接使用 moodJson 数组
+                    if let moodLabels = todayMood.moodJson {
+                        self?.emotions = moodLabels
+                    } else {
+                        self?.emotions = []
                     }
+                    
                 case .failure(let error):
                     print("获取今日心情失败: \(error.localizedDescription)")
-                }
-            }
-        }
-    }
-    
-    func postTodayMood(content: String) {
-        todayManager.postTodayMood(content: content) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    print("成功发布今日心情")
-                    self?.fetchTodayMood()  // 重新获取今日心情数据
-                case .failure(let error):
-                    print("发布失败: \(error.localizedDescription)")
+                    // 可以在这里设置一些默认值
+                    self?.topEmotion = "未知"
+                    self?.comfortLanguage = "暂时无法获取心情数据"
+                    self?.currentThought = ""
+                    self?.emotions = []
                 }
             }
         }

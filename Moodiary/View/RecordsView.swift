@@ -189,7 +189,7 @@ struct RecordCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             // Emotions View
-            EmotionSpectrum(emotions: record.emotions)
+            EmotionSpectrum(emotions: record.moodJson!)
                 .frame(height: 30)
                 .clipShape(RoundedRectangle(cornerRadius: 15))
             
@@ -200,27 +200,10 @@ struct RecordCard: View {
                 .lineLimit(3)
                 .lineSpacing(4)
             
-            // Tags
-            if let tags = record.tags, !tags.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        ForEach(tags, id: \.self) { tag in
-                            Text(tag)
-                                .font(.caption)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(Color.blue.opacity(0.1))
-                                .foregroundColor(.blue)
-                                .cornerRadius(8)
-                        }
-                    }
-                }
-            }
-            
             // Timestamp
-            Text(formattedDate(record.createdAt))
-                .font(.caption)
-                .foregroundColor(.gray)
+//            Text(formattedDate(record.createdAt))
+//                .font(.caption)
+//                .foregroundColor(.gray)
         }
         .padding()
         .background(

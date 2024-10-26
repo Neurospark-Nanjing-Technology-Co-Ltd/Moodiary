@@ -122,7 +122,7 @@ struct RegisterView: View {
     
     private func syncUser(email: String, username: String, password: String, token: String) {
         withAnimation {
-            let localUser = UserModel(email: email, username: username, password: password, token: token)
+            let localUser = UserModel(email: email,  password: password, token: token)
             modelContext.insert(localUser)
         }
     }

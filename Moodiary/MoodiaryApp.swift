@@ -13,11 +13,15 @@ struct MoodiaryApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
+            UserModel.self  // 添加 UserModel 到 schema
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            let container = try ModelContainer(for: schema, configurations: [modelConfiguration])
+            // 设置共享的 ModelContext
+            ModelContextManager.shared.modelContext = ModelContext(container)
+            return container
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }

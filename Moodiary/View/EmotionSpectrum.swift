@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct EmotionSpectrum: View {
-    let emotions: [Emotion]
+    let emotions: [MoodLabel]
     
     var body: some View {
         GeometryReader { geometry in

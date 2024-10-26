@@ -10,10 +10,20 @@ import SwiftUI
 struct TodayView: View {
     @StateObject private var viewModel = TodayViewModel()
     @State private var showingInputSheet = false
-    @State private var userInput = ""  // 新增状态变量来存储用户输入
+    @State private var userInput = ""
+    @State private var showError = false
+    @State private var errorMessage = ""
     
-    let backgroundGradient = LinearGradient(gradient: Gradient(colors: [Color(hex: "F8F9FA"), Color(hex: "E9ECEF")]), startPoint: .top, endPoint: .bottom)
-    let cardGradient = LinearGradient(gradient: Gradient(colors: [Color.white, Color(hex: "F8F9FA")]), startPoint: .top, endPoint: .bottom)
+    let backgroundGradient = LinearGradient(
+        gradient: Gradient(colors: [Color(hex: "F8F9FA"), Color(hex: "E9ECEF")]),
+        startPoint: .top,
+        endPoint: .bottom
+    )
+    let cardGradient = LinearGradient(
+        gradient: Gradient(colors: [Color.white, Color(hex: "F8F9FA")]),
+        startPoint: .top,
+        endPoint: .bottom
+    )
     
     var body: some View {
         ZStack {
@@ -33,6 +43,36 @@ struct TodayView: View {
         }
         .onAppear {
             viewModel.fetchTodayMood()
+        }
+        .sheet(isPresented: $showingInputSheet) {
+            InputView(
+                thought: $userInput,
+                isPresented: $showingInputSheet,
+                onSave: { content in
+                    RecordManager.shared.createRecord(content: content, title: "Daily Mood") { result in
+                        DispatchQueue.main.async {
+                            switch result {
+                            case .success:
+                                viewModel.fetchTodayMood()
+                                userInput = ""
+                                showingInputSheet = false
+                            case .failure(let error):
+                                errorMessage = error.localizedDescription
+                                showError = true
+                                // 延迟关闭错误提示
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                    showError = false
+                                }
+                            }
+                        }
+                    }
+                }
+            )
+        }
+        .alert("保存失败", isPresented: $showError) {
+            Button("确定", role: .cancel) { }
+        } message: {
+            Text(errorMessage)
         }
     }
     
@@ -71,7 +111,7 @@ struct TodayView: View {
                     .font(.system(size: 20, weight: .medium, design: .rounded))
                     .foregroundColor(.primary)
                     .padding(.bottom, 8)
-
+                
                 Text(viewModel.comfortLanguage)
                     .font(.system(size: 16, weight: .regular, design: .rounded))
                     .foregroundColor(.secondary)
@@ -126,6 +166,7 @@ struct TodayView: View {
             HStack {
                 Spacer()
                 Button(action: {
+                    userInput = ""
                     showingInputSheet = true
                 }) {
                     Image(systemName: "plus")
@@ -139,12 +180,6 @@ struct TodayView: View {
                 .padding(.trailing, 20)
                 .padding(.bottom, 20)
             }
-        }
-        .sheet(isPresented: $showingInputSheet) {
-            InputView(thought: $userInput, isPresented: $showingInputSheet, onSave: {
-                viewModel.postTodayMood(content: userInput)
-                userInput = ""  // 清空输入
-            })
         }
     }
     
@@ -160,7 +195,6 @@ struct TodayView: View {
         }
     }
 }
-
 
 extension Color {
     init(hex: String) {
@@ -178,7 +212,7 @@ extension Color {
         default:
             (a, r, g, b) = (1, 1, 1, 0)
         }
-
+        
         self.init(
             .sRGB,
             red: Double(r) / 255,

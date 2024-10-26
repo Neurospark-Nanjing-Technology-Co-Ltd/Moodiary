@@ -110,10 +110,13 @@ struct LoginView: View {
     }
     
     private func syncUser(email: String, password: String, token: String) {
-        let localUser = UserModel(email: email, username: email, password: password, token: token)
+        let localUser = UserModel(email: email, password: password, token: token)
         modelContext.insert(localUser)
         do {
             try modelContext.save()
+            ModelContextManager.shared.modelContext = modelContext
+            // 添加打印来确认 token 已保存
+            print("Token saved: \(token)")
         } catch {
             print("Failed to save user: \(error)")
         }

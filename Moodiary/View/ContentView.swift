@@ -3,7 +3,7 @@ import SwiftData
 
 struct ContentView: View {
     @State private var selectedTab = 0
-    @State private var isLoggedIn = false
+    @State private var isLoggedIn = true
     @Environment(\.modelContext) private var modelContext
     @Query private var users: [UserModel]
     

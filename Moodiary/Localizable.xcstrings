@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    " 现在的想法是..." : {
+
+    },
     "【未定事件簿】未名晶片×100" : {
 
     },
@@ -11,6 +14,9 @@
 
     },
     "3714" : {
+
+    },
+    "B" : {
 
     },
     "Confirm Password" : {
@@ -70,6 +76,7 @@
       }
     },
     "保存" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -86,6 +93,7 @@
 
     },
     "取消" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -331,6 +339,7 @@
       }
     },
     "输入你的随想" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

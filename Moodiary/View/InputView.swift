@@ -4,41 +4,164 @@
 //
 //  Created by YI HE on 2024/10/24.
 //
+
 import SwiftUI
+import Combine
 
 struct InputView: View {
     @Binding var thought: String
     @Binding var isPresented: Bool
-    @State private var tempThought: String = ""
+    @FocusState private var isFocused: Bool
+    @State private var keyboardHeight: CGFloat = 0
     var onSave: () -> Void
     
     var body: some View {
-        NavigationView {
-            VStack {
-                TextEditor(text: $tempThought)
-                    .padding()
-                    .frame(minHeight: 200)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                    )
-                    .padding()
-            }
-            .navigationBarTitle("输入你的随想", displayMode: .inline)
-            .navigationBarItems(
-                leading: Button("取消") {
-                    isPresented = false
-                },
-                trailing: Button("保存") {
-                    thought = tempThought
-                    onSave()
+        ZStack(alignment: .bottom) {
+            // 半透明背景，点击退出
+            Color.black.opacity(0.3)
+                .edgesIgnoringSafeArea(.all)
+                .onTapGesture {
                     isPresented = false
                 }
-            )
+            
+            // 输入区域容器
+            VStack(spacing: 0) {
+                // 输入区域
+                ZStack(alignment: .topLeading) {
+                    if thought.isEmpty {
+                        Text(" 现在的想法是...")
+                            .foregroundColor(.gray)
+                            .padding(.horizontal, 5)
+                            .padding(.top, 8)
+                    }
+                    
+                    TextEditor(text: $thought)
+                        .focused($isFocused)
+                        .scrollContentBackground(.hidden)
+                        .background(Color.clear)
+                        .padding(.horizontal, 5)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 150)
+                .padding(.top, 8)
+                
+                // 底部工具栏
+                HStack(spacing: 20) {
+                    // 左侧工具
+                    HStack(spacing: 16) {
+                        Button(action: { /* Handle hashtag */ }) {
+                            Image(systemName: "number")
+                                .foregroundColor(.gray)
+                        }
+                        
+                        Button(action: { /* Handle image */ }) {
+                            Image(systemName: "photo")
+                                .foregroundColor(.gray)
+                        }
+                        
+                        Button(action: { /* Handle bold */ }) {
+                            Text("B")
+                                .bold()
+                                .foregroundColor(.gray)
+                        }
+                        
+                        Button(action: { /* Handle list */ }) {
+                            Image(systemName: "list.bullet")
+                                .foregroundColor(.gray)
+                        }
+                        
+                        Button(action: { /* Handle more */ }) {
+                            Image(systemName: "ellipsis")
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    // 发送按钮
+                    Button(action: {
+                        onSave()
+                        isPresented = false
+                    }) {
+                        Image(systemName: "paperplane.fill")
+                            .font(.system(size: 16))
+                            .foregroundColor(.white)
+                            .frame(width: 32, height: 32)
+                            .background(thought.isEmpty ? Color.gray : Color.blue)
+                            .clipShape(Circle())
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .padding(.bottom, 5)
+                .background(Color(UIColor.systemGray6))
+            }
+            .background(Color(UIColor.systemBackground))
+            .clipShape(CustomRoundedCorners(radius: 16, corners: [.topLeft, .topRight])) // 使用自定义圆角形状
+            .offset(y: keyboardHeight > 0 ? -keyboardHeight + 8 : 0)
         }
+        .edgesIgnoringSafeArea(.all)
+        .animation(.easeOut(duration: 0.25), value: keyboardHeight)
         .onAppear {
-            tempThought = thought
+            isFocused = true
+            setupKeyboardNotifications()
         }
+        .onDisappear {
+            removeKeyboardNotifications()
+        }
+    }
+    
+    // 键盘通知相关代码保持不变...
+    private func setupKeyboardNotifications() {
+        NotificationCenter.default.addObserver(
+            forName: UIResponder.keyboardWillShowNotification,
+            object: nil,
+            queue: .main
+        ) { notification in
+            guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
+                return
+            }
+            withAnimation(.easeOut(duration: 0.25)) {
+                self.keyboardHeight = keyboardFrame.height
+            }
+        }
+        
+        NotificationCenter.default.addObserver(
+            forName: UIResponder.keyboardWillHideNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            withAnimation(.easeOut(duration: 0.25)) {
+                self.keyboardHeight = 0
+            }
+        }
+    }
+    
+    private func removeKeyboardNotifications() {
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
     }
 }
 
+// 自定义圆角形状
+struct CustomRoundedCorners: Shape {
+    var radius: CGFloat
+    var corners: UIRectCorner
+    
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(
+            roundedRect: rect,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: radius, height: radius)
+        )
+        return Path(path.cgPath)
+    }
+}

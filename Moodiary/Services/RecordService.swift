@@ -6,8 +6,6 @@
 //
 
 
-// RecordService.swift
-
 import Foundation
 import Moya
 

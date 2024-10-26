@@ -14,7 +14,6 @@
 		00C643092CC92CAE00156FB1 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 00C643082CC92CAE00156FB1 /* Moya */; };
 		00C6430B2CC92CAE00156FB1 /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 00C6430A2CC92CAE00156FB1 /* ReactiveMoya */; };
 		00C6430D2CC92CAE00156FB1 /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 00C6430C2CC92CAE00156FB1 /* RxMoya */; };
-		E35682312CCCD1F800697969 /* ModelContextManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E35682302CCCD1F800697969 /* ModelContextManager.swift */; };
 		E38F72802CCA32FC002F9BE8 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E38F727F2CCA32FC002F9BE8 /* Localizable.xcstrings */; };
 		E38F728B2CCA34EB002F9BE8 /* TodayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38F728A2CCA34EB002F9BE8 /* TodayViewModel.swift */; };
 /* End PBXBuildFile section */
@@ -24,7 +23,6 @@
 		00636A962C9942E7002EB702 /* MoodiaryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodiaryApp.swift; sourceTree = "<group>"; };
 		00636A9C2C9942E9002EB702 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		00636A9F2C9942E9002EB702 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		E35682302CCCD1F800697969 /* ModelContextManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelContextManager.swift; sourceTree = "<group>"; };
 		E38F727F2CCA32FC002F9BE8 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		E38F728A2CCA34EB002F9BE8 /* TodayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewModel.swift; sourceTree = "<group>"; };
 		E38F72DD2CCBDB73002F9BE8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -34,6 +32,7 @@
 		00C642F92CC92BEA00156FB1 /* Services */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Services; sourceTree = "<group>"; };
 		00C643002CC92C0B00156FB1 /* View */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = View; sourceTree = "<group>"; };
 		00C643102CC92D2900156FB1 /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
+		E35682822CCCDF1500697969 /* Tools */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Tools; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,7 +69,7 @@
 		00636A952C9942E7002EB702 /* Moodiary */ = {
 			isa = PBXGroup;
 			children = (
-				E356822B2CCCC83C00697969 /* Utilites */,
+				E35682822CCCDF1500697969 /* Tools */,
 				E38F72DD2CCBDB73002F9BE8 /* Info.plist */,
 				E38F72892CCA34E0002F9BE8 /* ViewModel */,
 				00C642F92CC92BEA00156FB1 /* Services */,
@@ -90,14 +89,6 @@
 				00636A9F2C9942E9002EB702 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		E356822B2CCCC83C00697969 /* Utilites */ = {
-			isa = PBXGroup;
-			children = (
-				E35682302CCCD1F800697969 /* ModelContextManager.swift */,
-			);
-			path = Utilites;
 			sourceTree = "<group>";
 		};
 		E38F72892CCA34E0002F9BE8 /* ViewModel */ = {
@@ -127,6 +118,7 @@
 				00C642F92CC92BEA00156FB1 /* Services */,
 				00C643002CC92C0B00156FB1 /* View */,
 				00C643102CC92D2900156FB1 /* Models */,
+				E35682822CCCDF1500697969 /* Tools */,
 			);
 			name = Moodiary;
 			productName = Moodiary;
@@ -190,7 +182,6 @@
 			files = (
 				E38F728B2CCA34EB002F9BE8 /* TodayViewModel.swift in Sources */,
 				00636A972C9942E7002EB702 /* MoodiaryApp.swift in Sources */,
-				E35682312CCCD1F800697969 /* ModelContextManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -4,6 +4,7 @@ import Moya
 enum AddressService {
     case getAddresses
     case addAddress(street: String, city: String, state: String, postalCode: String, country: String)
+    case deleteAddress(addressId: Int)
 }
 
 extension AddressService: TargetType {
@@ -17,6 +18,8 @@ extension AddressService: TargetType {
             return "/Address/adresses"
         case .addAddress:
             return "/Address/addAddress"
+        case .deleteAddress:
+            return "/Address/deleteAddress"
         }
     }
     
@@ -26,6 +29,8 @@ extension AddressService: TargetType {
             return .get
         case .addAddress:
             return .post
+        case .deleteAddress:
+            return .delete
         }
     }
     
@@ -42,6 +47,8 @@ extension AddressService: TargetType {
                 "country": country
             ]
             return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
+        case let .deleteAddress(addressId):
+            return .uploadMultipart([MultipartFormData(provider: .data("\(addressId)".data(using: .utf8)!), name: "addressId")])
         }
     }
     
@@ -93,6 +100,21 @@ class AddressManager {
                     completion(.success(()))
                 } else {
                     completion(.failure(NSError(domain: "", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: "添加地址失败"])))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func deleteAddress(addressId: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+        provider.request(.deleteAddress(addressId: addressId)) { result in
+            switch result {
+            case .success(let response):
+                if response.statusCode == 200 {
+                    completion(.success(()))
+                } else {
+                    completion(.failure(NSError(domain: "", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: "删除地址失败"])))
                 }
             case .failure(let error):
                 completion(.failure(error))

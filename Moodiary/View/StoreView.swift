@@ -1,14 +1,5 @@
 import SwiftUI
 
-// 添加 Product 结构体定义
-struct Product: Identifiable {
-    let id = UUID()
-    let name: String
-    let description: String
-    let pointsCost: Int
-    let stock: Int
-    let imageUrl: String
-}
 
 // 添加 Order 结构体定义
 struct Order: Identifiable {
@@ -22,12 +13,9 @@ struct Order: Identifiable {
 struct StoreView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var searchText = ""
-    @State private var products: [Product] = [
-        Product(name: "商品1", description: "这是商品1的描述", pointsCost: 100, stock: 10, imageUrl: "https://example.com/image1.jpg"),
-        Product(name: "商品2", description: "这是商品2的描述", pointsCost: 200, stock: 5, imageUrl: "https://example.com/image2.jpg"),
-        Product(name: "商品3", description: "这是商品3的描述", pointsCost: 150, stock: 8, imageUrl: "https://example.com/image3.jpg"),
-        Product(name: "商品4", description: "这是商品4的描述", pointsCost: 300, stock: 3, imageUrl: "https://example.com/image4.jpg")
-    ]
+    @State private var products: [Product] = []
+    @State private var isLoading = false
+    @State private var errorMessage: ErrorWrapper?
     
     var body: some View {
         VStack(spacing: 0) {
@@ -40,7 +28,7 @@ struct StoreView: View {
                         .foregroundColor(.black)
                 }
                 Spacer()
-                Text("")
+                Text("商城")
                     .font(.headline)
                 Spacer()
                 NavigationLink(destination: OrderHistoryView()) {
@@ -76,16 +64,38 @@ struct StoreView: View {
             .padding(.horizontal)
             
             // 商品列表
-            ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                    ForEach(products) { product in
-                        StoreItemView(product: product)
+            if isLoading {
+                ProgressView()
+                    .padding()
+            } else {
+                ScrollView {
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+                        ForEach(products) { product in
+                            StoreItemView(product: product)
+                        }
                     }
+                    .padding()
                 }
-                .padding()
             }
         }
         .navigationBarHidden(true)
+        .onAppear(perform: loadProducts)
+        .alert(item: $errorMessage) { errorWrapper in
+            Alert(title: Text("错误"), message: Text(errorWrapper.error), dismissButton: .default(Text("确定")))
+        }
+    }
+    
+    private func loadProducts() {
+        isLoading = true
+        ProductManager.shared.getProducts { result in
+            isLoading = false
+            switch result {
+            case .success(let products):
+                self.products = products
+            case .failure(let error):
+                self.errorMessage = ErrorWrapper(error: error.localizedDescription)
+            }
+        }
     }
 }
 
@@ -224,6 +234,15 @@ struct ErrorWrapper: Identifiable {
 
 struct StoreItemView: View {
     let product: Product
+    @State private var showingPurchaseSheet = false
+    @State private var quantity = 1
+    @State private var selectedAddressId: Int?
+    @State private var addresses: [Address] = []
+    @State private var isLoading = false
+    @State private var errorMessage: String?
+    @State private var showingAlert = false
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -261,7 +280,7 @@ struct StoreItemView: View {
             }
             
             Button(action: {
-                // 兑换操作
+                showingPurchaseSheet = true
             }) {
                 Text("购买")
                     .foregroundColor(.white)
@@ -276,6 +295,107 @@ struct StoreItemView: View {
         .background(Color.white)
         .cornerRadius(10)
         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+        .sheet(isPresented: $showingPurchaseSheet) {
+            PurchaseView(product: product, quantity: $quantity, selectedAddressId: $selectedAddressId, addresses: $addresses, isLoading: $isLoading, errorMessage: $errorMessage, onPurchase: performPurchase, showingAlert: $showingAlert, alertTitle: $alertTitle, alertMessage: $alertMessage)
+        }
+        .onAppear(perform: loadAddresses)
+        .alert(isPresented: $showingAlert) {
+            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("确定")))
+        }
+    }
+    
+    private func loadAddresses() {
+        AddressManager.shared.getAddresses { result in
+            switch result {
+            case .success(let response):
+                self.addresses = response.data
+            case .failure(let error):
+                self.errorMessage = error.localizedDescription
+            }
+        }
+    }
+    
+    private func performPurchase() {
+        guard let addressId = selectedAddressId else {
+            errorMessage = "请选择一个地址"
+            return
+        }
+        
+        isLoading = true
+        PaymentManager.shared.createPayment(productId: product.id, quantity: quantity, addressId: addressId) { result in
+            isLoading = false
+            switch result {
+            case .success(let response):
+                if response.code == 0 {
+                    showingPurchaseSheet = false
+                    alertTitle = "购买成功"
+                    alertMessage = "您已成功购买商品，订单号：\(response.data?.orderId ?? 0)"
+                } else {
+                    alertTitle = "购买失败"
+                    alertMessage = response.message
+                }
+                showingAlert = true
+            case .failure(let error):
+                alertTitle = "购买失败"
+                alertMessage = error.localizedDescription
+                showingAlert = true
+            }
+        }
+    }
+}
+
+struct PurchaseView: View {
+    let product: Product
+    @Binding var quantity: Int
+    @Binding var selectedAddressId: Int?
+    @Binding var addresses: [Address]
+    @Binding var isLoading: Bool
+    @Binding var errorMessage: String?
+    let onPurchase: () -> Void
+    @Binding var showingAlert: Bool
+    @Binding var alertTitle: String
+    @Binding var alertMessage: String
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("商品信息")) {
+                    Text(product.name)
+                    Text("单价: \(product.pointsCost) 积分")
+                    Stepper("数量: \(quantity)", value: $quantity, in: 1...product.stock)
+                    Text("总价: \(product.pointsCost * quantity) 积分")
+                }
+                
+                Section(header: Text("选择地址")) {
+                    Picker("地址", selection: $selectedAddressId) {
+                        Text("请选择地址").tag(nil as Int?)
+                        ForEach(addresses) { address in
+                            Text("\(address.street), \(address.city)").tag(address.id as Int?)
+                        }
+                    }
+                }
+                
+                if let errorMessage = errorMessage {
+                    Section {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                    }
+                }
+            }
+            .navigationTitle("确认购买")
+            .navigationBarItems(trailing: Button("购买") {
+                onPurchase()
+            })
+            .disabled(isLoading)
+            .overlay(Group {
+                if isLoading {
+                    ProgressView()
+                }
+            })
+        }
+        .alert(isPresented: $showingAlert) {
+            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("确定")))
+        }
     }
 }
 

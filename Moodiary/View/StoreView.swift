@@ -104,12 +104,16 @@ struct AddressListView: View {
     @State private var isLoading = false
     @State private var errorMessage: ErrorWrapper?
     @State private var showingAddAddressSheet = false
+    @State private var showingAlert = false
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
     
     var body: some View {
         List {
             ForEach(addresses) { address in
                 AddressRow(address: address)
             }
+            .onDelete(perform: deleteAddress)
         }
         .navigationTitle("地址列表")
         .onAppear(perform: loadAddresses)
@@ -118,8 +122,8 @@ struct AddressListView: View {
                 ProgressView()
             }
         })
-        .alert(item: $errorMessage) { errorWrapper in
-            Alert(title: Text("错误"), message: Text(errorWrapper.error), dismissButton: .default(Text("确定")))
+        .alert(isPresented: $showingAlert) {
+            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("确定")))
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -143,8 +147,30 @@ struct AddressListView: View {
             case .success(let response):
                 self.addresses = response.data
             case .failure(let error):
-                self.errorMessage = ErrorWrapper(error: error.localizedDescription)
+                self.alertTitle = "错误"
+                self.alertMessage = error.localizedDescription
+                self.showingAlert = true
             }
+        }
+    }
+    
+    private func deleteAddress(at offsets: IndexSet) {
+        guard let index = offsets.first else { return }
+        let addressToDelete = addresses[index]
+        
+        isLoading = true
+        AddressManager.shared.deleteAddress(addressId: addressToDelete.id) { result in
+            isLoading = false
+            switch result {
+            case .success:
+                addresses.remove(at: index)
+                alertTitle = "成功"
+                alertMessage = "地址已成功删除"
+            case .failure(let error):
+                alertTitle = "删除失败"
+                alertMessage = error.localizedDescription
+            }
+            showingAlert = true
         }
     }
 }
@@ -455,3 +481,4 @@ struct StoreView_Previews: PreviewProvider {
         }
     }
 }
+

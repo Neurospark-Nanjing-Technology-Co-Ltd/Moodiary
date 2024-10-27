@@ -48,7 +48,7 @@ extension AddressService: TargetType {
             ]
             return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
         case let .deleteAddress(addressId):
-            return .uploadMultipart([MultipartFormData(provider: .data("\(addressId)".data(using: .utf8)!), name: "addressId")])
+            return .requestParameters(parameters: ["addressId": addressId], encoding: URLEncoding.queryString)
         }
     }
     
@@ -111,10 +111,16 @@ class AddressManager {
         provider.request(.deleteAddress(addressId: addressId)) { result in
             switch result {
             case .success(let response):
-                if response.statusCode == 200 {
-                    completion(.success(()))
-                } else {
-                    completion(.failure(NSError(domain: "", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: "删除地址失败"])))
+                do {
+                    let deleteResponse = try JSONDecoder().decode(DeleteAddressResponse.self, from: response.data)
+                    if deleteResponse.code == 0 && deleteResponse.message == "Success" {
+                        completion(.success(()))
+                    } else {
+                        completion(.failure(NSError(domain: "", code: deleteResponse.code, userInfo: [NSLocalizedDescriptionKey: deleteResponse.message])))
+                    }
+                } catch {
+                    print("Decoding error: \(error)")
+                    completion(.failure(error))
                 }
             case .failure(let error):
                 completion(.failure(error))
@@ -143,4 +149,10 @@ struct Address: Codable, Identifiable {
         case id = "addressId"
         case userId, street, city, state, postalCode, country
     }
+}
+
+// 添加删除地址响应模型
+struct DeleteAddressResponse: Codable {
+    let code: Int
+    let message: String
 }

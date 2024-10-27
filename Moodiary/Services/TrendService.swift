@@ -49,7 +49,7 @@ extension TrendService: TargetType {
     var headers: [String: String]? {
         if let token = ModelContextManager.shared.getToken() {
             return [
-                "Content-type": "application/x-www-form-urlencoded",
+                "Content-type": "multipart/form-data",
                 "Authorization": "\(token)"
             ]
         }

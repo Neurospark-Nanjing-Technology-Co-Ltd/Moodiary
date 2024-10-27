@@ -32,12 +32,51 @@ struct CloudShape: Shape {
 
 struct CloudView: View {
     @State private var phase: CGFloat = 0
+    let emotion: String
+    
+    init(emotion: String = "neutral") {
+        self.emotion = emotion
+    }
+    
+    private func colorForEmotion(_ emotion: String) -> Color {
+        switch emotion.lowercased() {
+        case "sadness": return .blue
+        case "disappointment": return .purple
+        case "optimism": return .yellow
+        case "neutral": return .gray
+        case "desire": return .pink
+        case "realization": return .mint
+        case "caring": return .green
+        case "approval": return .teal
+        case "joy": return .orange
+        case "disapproval": return .red
+        case "nervousness": return .indigo
+        case "grief": return .cyan
+        case "remorse": return .brown
+        case "annoyance": return .orange
+        case "relief": return .mint
+        case "admiration": return .yellow
+        case "fear": return .purple
+        case "love": return .pink
+        case "confusion": return .gray
+        case "surprise": return .orange
+        case "amusement": return .green
+        case "excitement": return .red
+        case "curiosity": return .blue
+        case "disgust": return .green
+        case "embarrassment": return .pink
+        case "pride": return .yellow
+        case "anger": return .red
+        case "gratitude": return .blue
+        default: return .gray
+        }
+    }
     
     var body: some View {
         ZStack {
             ForEach(0..<3) { i in
                 CloudShape()
-                    .fill(Color.blue.opacity(0.3 - Double(i) * 0.1))
+                    .fill(colorForEmotion(emotion).opacity(0.3 - Double(i) * 0.1))
                     .scaleEffect(1.0 + CGFloat(i) * 0.1)
                     .offset(x: sin(phase + Double(i) * .pi * 2/3) * 10,
                             y: cos(phase + Double(i) * .pi * 2/3) * 10)

@@ -6,6 +6,7 @@
 //
 import SwiftUI
 
+// MARK: - Word Cloud View
 struct WordCloudView: View {
     let items: [WordCloudItem]
     @State private var positions: [CGPoint] = []
@@ -39,7 +40,7 @@ struct WordCloudView: View {
                         .foregroundColor(randomColor(for: index))
                         .opacity(0.7)
                         .offset(x: positions.indices.contains(index) ? positions[index].x : 0,
-                                y: positions.indices.contains(index) ? positions[index].y : 0)
+                               y: positions.indices.contains(index) ? positions[index].y : 0)
                         .animation(
                             Animation.easeInOut(duration: Double.random(in: 3...6))
                                 .repeatForever(autoreverses: true)
@@ -97,7 +98,7 @@ struct WordCloudView: View {
     }
 }
 
-// 预览提供者
+// MARK: - Preview Provider
 struct WordCloudView_Previews: PreviewProvider {
     static var previews: some View {
         WordCloudView(items: [

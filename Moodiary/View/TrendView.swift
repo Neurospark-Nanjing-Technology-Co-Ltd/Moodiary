@@ -20,6 +20,7 @@ struct TrendView: View {
         startPoint: .top,
         endPoint: .bottom
     )
+    
     let cardGradient = LinearGradient(
         gradient: Gradient(colors: [Color.white, Color(hex: "F8F9FA")]),
         startPoint: .top,
@@ -38,7 +39,6 @@ struct TrendView: View {
                     VStack(spacing: 20) {
                         headerView()
                             .padding(.top)
-                            .padding(.horizontal)
                         
                         dateSelectionView()
                             .padding(.top, 10)
@@ -46,7 +46,7 @@ struct TrendView: View {
                         if let data = trendData {
                             moodLineChartView(data: data.moodTrend)
                             heatMapView(data: data.heatMap)
-                            WordCloudView(items: data.wordCloud)
+                            wordCloudView(items: data.wordCloud)
                             weekSummaryView(summary: data.summary)
                         }
                     }
@@ -72,6 +72,23 @@ struct TrendView: View {
             Spacer()
         }
     }
+    
+    private func wordCloudView(items: [WordCloudItem]) -> some View {
+        componentView(height: 300) {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("情绪词云")
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .foregroundColor(.primary)
+                    .padding(.horizontal)
+                
+                WordCloudView(items: items)
+                    .frame(height: 230)
+                    .padding(.horizontal)
+            }
+            .padding(.vertical)
+        }
+    }
+
     
     private func dateSelectionView() -> some View {
         HStack(spacing: 15) {
@@ -100,6 +117,70 @@ struct TrendView: View {
         }
     }
     
+    private func moodLineChartView(data: [MoodData]) -> some View {
+        componentView(height: 300) {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("心情变化")
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .foregroundColor(.primary)
+                
+                Chart {
+                    ForEach(data) { item in
+                        LineMark(
+                            x: .value("Date", item.date),
+                            y: .value("Mood", item.mood)
+                        )
+                        .foregroundStyle(Color.blue.gradient)
+                    }
+                }
+                .frame(height: 200)
+                .chartYScale(domain: 1...5)
+            }
+            .padding()
+        }
+    }
+    
+    private func heatMapView(data: [HeatMapData]) -> some View {
+        componentView(height: 250) {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("记录频率")
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .foregroundColor(.primary)
+                
+                CalendarHeatMap(data: data)
+                    .frame(height: 180)
+            }
+            .padding()
+        }
+    }
+    
+    private func weekSummaryView(summary: String) -> some View {
+        componentView(height: 200) {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("期间总结")
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .foregroundColor(.primary)
+                
+                Text(summary)
+                    .font(.system(size: 16))
+                    .foregroundColor(.secondary)
+            }
+            .padding()
+        }
+    }
+    
+    @ViewBuilder
+    private func componentView<Content: View>(height: CGFloat, @ViewBuilder content: @escaping () -> Content) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .fill(cardGradient)
+                .frame(height: height)
+                .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
+            
+            content()
+        }
+    }
+    
     private func formattedDateRange() -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "zh_CN")
@@ -116,74 +197,6 @@ struct TrendView: View {
         }
         
         return "\(formatter.string(from: startDate)) - \(formatter.string(from: endDate))"
-    }
-    
-    private func moodLineChartView(data: [MoodData]) -> some View {
-        componentView(height: 300) {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("心情变化")
-                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-                    .foregroundColor(.primary)
-                    .padding(.horizontal)
-                
-                Chart {
-                    ForEach(data) { item in
-                        LineMark(
-                            x: .value("Date", item.date),
-                            y: .value("Mood", item.mood)
-                        )
-                        .foregroundStyle(Color.blue.gradient)
-                    }
-                }
-                .frame(height: 200)
-                .padding(.horizontal)
-            }
-        }
-    }
-    
-    private func heatMapView(data: [HeatMapData]) -> some View {
-        componentView(height: 250) {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("记录频率")
-                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-                    .foregroundColor(.primary)
-                    .padding(.horizontal)
-                
-                HeatMapCalendarView(data: data)
-                    .frame(height: 180)
-                    .padding(.horizontal)
-            }
-        }
-    }
-    
-    
-    private func weekSummaryView(summary: String) -> some View {
-        componentView(height: 200) {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("本周总结")
-                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-                    .foregroundColor(.primary)
-                    .padding(.horizontal)
-                
-                Text(summary)
-                    .font(.system(size: 16, weight: .regular, design: .rounded))
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal)
-                    .padding(.top, 5)
-            }
-        }
-    }
-    
-    @ViewBuilder
-    private func componentView(height: CGFloat, @ViewBuilder content: @escaping () -> some View) -> some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 20)
-                .fill(cardGradient)
-                .frame(height: height)
-                .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
-            
-            content()
-        }
     }
     
     private func loadTrendData() {
@@ -204,32 +217,21 @@ struct TrendView: View {
     }
 }
 
-// MARK: - Supporting Views
-struct HeatMapCalendarView: View {
+struct CalendarHeatMap: View {
     let data: [HeatMapData]
+    let columns = Array(repeating: GridItem(.fixed(40), spacing: 8), count: 7)
     
     var body: some View {
-        VStack(spacing: 8) {
-            ForEach(0..<4) { row in
-                HStack(spacing: 8) {
-                    ForEach(0..<7) { column in
-                        let index = row * 7 + column
-                        if index < data.count {
-                            RoundedRectangle(cornerRadius: 4)
-                                .fill(colorForCount(data[index].count))
-                                .frame(width: 30, height: 30)
-                                .overlay(
-                                    Text("\(data[index].count)")
-                                        .font(.system(size: 12, weight: .medium))
-                                        .foregroundColor(.white)
-                                )
-                        } else {
-                            RoundedRectangle(cornerRadius: 4)
-                                .fill(Color.gray.opacity(0.1))
-                                .frame(width: 30, height: 30)
-                        }
-                    }
-                }
+        LazyVGrid(columns: columns, spacing: 8) {
+            ForEach(data) { item in
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(colorForCount(item.count))
+                    .frame(height: 40)
+                    .overlay(
+                        Text("\(item.count)")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.white)
+                    )
             }
         }
     }
@@ -245,6 +247,7 @@ struct HeatMapCalendarView: View {
     }
 }
 
+// MARK: - Preview Provider
 struct TrendView_Previews: PreviewProvider {
     static var previews: some View {
         TrendView()

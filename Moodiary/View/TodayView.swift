@@ -102,7 +102,7 @@ struct TodayView: View {
                         .fill(Color.blue.opacity(0.1))
                         .frame(width: 150, height: 150)
                     
-                    CloudView()
+                    CloudView(emotion: viewModel.topEmotion)
                         .frame(width: 150, height: 150)
                         .clipShape(Circle())
                 }

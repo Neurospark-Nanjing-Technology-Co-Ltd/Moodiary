@@ -35,7 +35,7 @@ struct SettingsView: View {
     private var settingsOptions: [(imageName: String, title: String, destination: AnyView)] {
         [
             ("person.circle", "账户", AnyView(AccountSettingsView())),
-            ("person.2", "好友", AnyView(FriendsView())),
+//            ("person.2", "好友", AnyView(FriendsView())),
             ("cart", "商城", AnyView(StoreView())),
             ("globe", "多语言", AnyView(LanguageSettingsView())),
             ("doc.text", "用户协议", AnyView(UserAgreementView()))

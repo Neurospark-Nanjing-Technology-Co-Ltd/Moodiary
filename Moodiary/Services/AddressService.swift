@@ -3,6 +3,7 @@ import Moya
 
 enum AddressService {
     case getAddresses
+    case addAddress(street: String, city: String, state: String, postalCode: String, country: String)
 }
 
 extension AddressService: TargetType {
@@ -14,6 +15,8 @@ extension AddressService: TargetType {
         switch self {
         case .getAddresses:
             return "/Address/adresses"
+        case .addAddress:
+            return "/Address/addAddress"
         }
     }
     
@@ -21,6 +24,8 @@ extension AddressService: TargetType {
         switch self {
         case .getAddresses:
             return .get
+        case .addAddress:
+            return .post
         }
     }
     
@@ -28,6 +33,15 @@ extension AddressService: TargetType {
         switch self {
         case .getAddresses:
             return .requestPlain
+        case let .addAddress(street, city, state, postalCode, country):
+            let parameters: [String: Any] = [
+                "street": street,
+                "city": city,
+                "state": state,
+                "postalCode": postalCode,
+                "country": country
+            ]
+            return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
         }
     }
     
@@ -66,6 +80,21 @@ class AddressManager {
                     completion(.failure(error))
                 }
             case let .failure(error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func addAddress(street: String, city: String, state: String, postalCode: String, country: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        provider.request(.addAddress(street: street, city: city, state: state, postalCode: postalCode, country: country)) { result in
+            switch result {
+            case .success(let response):
+                if response.statusCode == 200 {
+                    completion(.success(()))
+                } else {
+                    completion(.failure(NSError(domain: "", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: "添加地址失败"])))
+                }
+            case .failure(let error):
                 completion(.failure(error))
             }
         }

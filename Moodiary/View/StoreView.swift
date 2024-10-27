@@ -93,6 +93,7 @@ struct AddressListView: View {
     @State private var addresses: [Address] = []
     @State private var isLoading = false
     @State private var errorMessage: ErrorWrapper?
+    @State private var showingAddAddressSheet = false
     
     var body: some View {
         List {
@@ -110,6 +111,18 @@ struct AddressListView: View {
         .alert(item: $errorMessage) { errorWrapper in
             Alert(title: Text("错误"), message: Text(errorWrapper.error), dismissButton: .default(Text("确定")))
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    showingAddAddressSheet = true
+                }) {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+        .sheet(isPresented: $showingAddAddressSheet) {
+            AddAddressView(isPresented: $showingAddAddressSheet, onAddressAdded: loadAddresses)
+        }
     }
     
     private func loadAddresses() {
@@ -121,6 +134,68 @@ struct AddressListView: View {
                 self.addresses = response.data
             case .failure(let error):
                 self.errorMessage = ErrorWrapper(error: error.localizedDescription)
+            }
+        }
+    }
+}
+
+struct AddAddressView: View {
+    @Binding var isPresented: Bool
+    var onAddressAdded: () -> Void
+    
+    @State private var street = ""
+    @State private var city = ""
+    @State private var state = ""
+    @State private var postalCode = ""
+    @State private var country = ""
+    @State private var isLoading = false
+    @State private var errorMessage: String?
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("地址信息")) {
+                    TextField("街道", text: $street)
+                    TextField("城市", text: $city)
+                    TextField("州/省", text: $state)
+                    TextField("邮政编码", text: $postalCode)
+                    TextField("国家", text: $country)
+                }
+                
+                if let errorMessage = errorMessage {
+                    Section {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                    }
+                }
+            }
+            .navigationTitle("添加地址")
+            .navigationBarItems(leading: Button("取消") {
+                isPresented = false
+            }, trailing: Button("保存") {
+                addAddress()
+            })
+            .disabled(isLoading)
+            .overlay(Group {
+                if isLoading {
+                    ProgressView()
+                }
+            })
+        }
+    }
+    
+    private func addAddress() {
+        isLoading = true
+        errorMessage = nil
+        
+        AddressManager.shared.addAddress(street: street, city: city, state: state, postalCode: postalCode, country: country) { result in
+            isLoading = false
+            switch result {
+            case .success:
+                isPresented = false
+                onAddressAdded()
+            case .failure(let error):
+                errorMessage = error.localizedDescription
             }
         }
     }

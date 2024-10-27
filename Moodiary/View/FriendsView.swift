@@ -123,17 +123,44 @@ struct AddFriendView: View {
 }
 
 struct FriendsListView: View {
+    @State private var friends: [Friend] = []
+    @State private var isLoading = false
+    @State private var errorMessage: String?
+    
     var body: some View {
-        List {
-            ForEach(0..<5) { _ in
-                FriendRow()
+        Group {
+            if isLoading {
+                ProgressView()
+            } else if let errorMessage = errorMessage {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+            } else {
+                List(friends) { friend in
+                    FriendRow(friend: friend)
+                }
             }
         }
         .navigationTitle("好友列表")
+        .onAppear(perform: loadFriends)
+    }
+    
+    private func loadFriends() {
+        isLoading = true
+        FriendshipManager.shared.listFollowing { result in
+            isLoading = false
+            switch result {
+            case .success(let friends):
+                self.friends = friends
+            case .failure(let error):
+                self.errorMessage = error.localizedDescription
+            }
+        }
     }
 }
 
 struct FriendRow: View {
+    let friend: Friend
+    
     var body: some View {
         HStack {
             Image(systemName: "person.circle.fill")
@@ -142,9 +169,12 @@ struct FriendRow: View {
                 .foregroundColor(.blue)
             
             VStack(alignment: .leading) {
-                Text("好友名称")
+                Text(friend.username)
                     .font(.headline)
-                Text("好友状态")
+                Text(friend.gender)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                Text(friend.email)
                     .font(.subheadline)
                     .foregroundColor(.gray)
             }

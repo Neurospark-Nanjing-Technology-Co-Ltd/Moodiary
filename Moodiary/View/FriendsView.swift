@@ -88,6 +88,11 @@ struct FriendsView: View {
 struct AddFriendView: View {
     @Binding var isPresented: Bool
     @State private var friendEmail = ""
+    @State private var isLoading = false
+    @State private var errorMessage: String?
+    @State private var showAlert = false
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
     
     var body: some View {
         NavigationView {
@@ -105,20 +110,46 @@ struct AddFriendView: View {
                         .background(Color.blue)
                         .cornerRadius(8)
                 }
+                .disabled(isLoading)
+                
+                if isLoading {
+                    ProgressView()
+                }
+                
+                if let errorMessage = errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                }
             }
             .padding()
             .navigationTitle("添加好友")
             .navigationBarItems(trailing: Button("取消") {
                 isPresented = false
             })
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("确定")))
+            }
         }
     }
     
     private func addFriend() {
-        // 这里添加处理添加好友的逻辑
-        print("添加好友：\(friendEmail)")
-        friendEmail = "" // 清空输入框
-        isPresented = false // 关闭添加好友视图
+        isLoading = true
+        errorMessage = nil
+        
+        FriendshipManager.shared.buildRelations(email: friendEmail) { result in
+            isLoading = false
+            switch result {
+            case .success:
+                alertTitle = "成功"
+                alertMessage = "已成功添加好友"
+                showAlert = true
+                friendEmail = "" // 清空输入框
+            case .failure(let error):
+                alertTitle = "错误"
+                alertMessage = error.localizedDescription
+                showAlert = true
+            }
+        }
     }
 }
 

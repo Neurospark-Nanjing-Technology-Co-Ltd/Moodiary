@@ -3,6 +3,7 @@ import Moya
 
 enum FriendshipService {
     case listFollowing
+    case buildRelations(email: String)
 }
 
 extension FriendshipService: TargetType {
@@ -12,6 +13,8 @@ extension FriendshipService: TargetType {
         switch self {
         case .listFollowing:
             return "/friendship/listFollowing"
+        case .buildRelations:
+            return "/friendship/BuildRelations"
         }
     }
     
@@ -19,6 +22,8 @@ extension FriendshipService: TargetType {
         switch self {
         case .listFollowing:
             return .get
+        case .buildRelations:
+            return .post
         }
     }
     
@@ -26,6 +31,9 @@ extension FriendshipService: TargetType {
         switch self {
         case .listFollowing:
             return .requestPlain
+        case .buildRelations(let email):
+            let formData = MultipartFormData(provider: .data(email.data(using: .utf8)!), name: "email")
+            return .uploadMultipart([formData])
         }
     }
     
@@ -64,6 +72,22 @@ class FriendshipManager {
                     let friendListResponse = try JSONDecoder().decode(FriendListResponse.self, from: response.data)
                     completion(.success(friendListResponse.data))
                 } catch {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func buildRelations(email: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        provider.request(.buildRelations(email: email)) { result in
+            switch result {
+            case .success(let response):
+                if response.statusCode == 200 {
+                    completion(.success(()))
+                } else {
+                    let error = NSError(domain: "", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: "添加好友失败"])
                     completion(.failure(error))
                 }
             case .failure(let error):

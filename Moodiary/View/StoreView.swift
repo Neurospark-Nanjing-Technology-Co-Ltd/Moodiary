@@ -91,36 +91,39 @@ struct StoreView: View {
 
 struct AddressListView: View {
     @State private var addresses: [Address] = []
-    @State private var showingAddAddress = false
+    @State private var isLoading = false
+    @State private var errorMessage: ErrorWrapper?
     
     var body: some View {
         List {
             ForEach(addresses) { address in
                 AddressRow(address: address)
             }
-            .onDelete(perform: deleteAddress)
         }
-        .navigationTitle("地址管理")
-        .navigationBarItems(trailing: Button(action: { showingAddAddress = true }) {
-            Image(systemName: "plus")
+        .navigationTitle("地址列表")
+        .onAppear(perform: loadAddresses)
+        .overlay(Group {
+            if isLoading {
+                ProgressView()
+            }
         })
-        .sheet(isPresented: $showingAddAddress) {
-            AddAddressView(addresses: $addresses)
+        .alert(item: $errorMessage) { errorWrapper in
+            Alert(title: Text("错误"), message: Text(errorWrapper.error), dismissButton: .default(Text("确定")))
         }
     }
     
-    func deleteAddress(at offsets: IndexSet) {
-        addresses.remove(atOffsets: offsets)
+    private func loadAddresses() {
+        isLoading = true
+        AddressManager.shared.getAddresses { result in
+            isLoading = false
+            switch result {
+            case .success(let response):
+                self.addresses = response.data
+            case .failure(let error):
+                self.errorMessage = ErrorWrapper(error: error.localizedDescription)
+            }
+        }
     }
-}
-
-struct Address: Identifiable {
-    let id = UUID()
-    let street: String
-    let city: String
-    let state: String
-    let postalCode: String
-    let country: String
 }
 
 struct AddressRow: View {
@@ -139,35 +142,9 @@ struct AddressRow: View {
     }
 }
 
-struct AddAddressView: View {
-    @Binding var addresses: [Address]
-    @Environment(\.presentationMode) var presentationMode
-    
-    @State private var street = ""
-    @State private var city = ""
-    @State private var state = ""
-    @State private var postalCode = ""
-    @State private var country = ""
-    
-    var body: some View {
-        NavigationView {
-            Form {
-                TextField("街道", text: $street)
-                TextField("城市", text: $city)
-                TextField("州/省", text: $state)
-                TextField("邮政编码", text: $postalCode)
-                TextField("国家", text: $country)
-            }
-            .navigationTitle("添加新地址")
-            .navigationBarItems(leading: Button("取消") {
-                presentationMode.wrappedValue.dismiss()
-            }, trailing: Button("保存") {
-                let newAddress = Address(street: street, city: city, state: state, postalCode: postalCode, country: country)
-                addresses.append(newAddress)
-                presentationMode.wrappedValue.dismiss()
-            })
-        }
-    }
+struct ErrorWrapper: Identifiable {
+    let id = UUID()
+    let error: String
 }
 
 struct StoreItemView: View {

@@ -1,8 +1,33 @@
 import SwiftUI
 
+// 添加 Product 结构体定义
+struct Product: Identifiable {
+    let id = UUID()
+    let name: String
+    let description: String
+    let pointsCost: Int
+    let stock: Int
+    let imageUrl: String
+}
+
+// 添加 Order 结构体定义
+struct Order: Identifiable {
+    let id = UUID()
+    let productName: String
+    let date: Date
+    let status: String
+    let pointsCost: Int
+}
+
 struct StoreView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var searchText = ""
+    @State private var products: [Product] = [
+        Product(name: "商品1", description: "这是商品1的描述", pointsCost: 100, stock: 10, imageUrl: "https://example.com/image1.jpg"),
+        Product(name: "商品2", description: "这是商品2的描述", pointsCost: 200, stock: 5, imageUrl: "https://example.com/image2.jpg"),
+        Product(name: "商品3", description: "这是商品3的描述", pointsCost: 150, stock: 8, imageUrl: "https://example.com/image3.jpg"),
+        Product(name: "商品4", description: "这是商品4的描述", pointsCost: 300, stock: 3, imageUrl: "https://example.com/image4.jpg")
+    ]
     
     var body: some View {
         VStack(spacing: 0) {
@@ -15,9 +40,13 @@ struct StoreView: View {
                         .foregroundColor(.black)
                 }
                 Spacer()
-                Text("兑换中心")
+                Text("")
                     .font(.headline)
                 Spacer()
+                NavigationLink(destination: OrderHistoryView()) {
+                    Text("订单记录")
+                        .foregroundColor(.blue)
+                }
                 NavigationLink(destination: AddressListView()) {
                     Text("地址")
                         .foregroundColor(.blue)
@@ -49,8 +78,8 @@ struct StoreView: View {
             // 商品列表
             ScrollView {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                    ForEach(0..<4) { _ in
-                        StoreItemView()
+                    ForEach(products) { product in
+                        StoreItemView(product: product)
                     }
                 }
                 .padding()
@@ -142,14 +171,22 @@ struct AddAddressView: View {
 }
 
 struct StoreItemView: View {
+    let product: Product
+    
     var body: some View {
         VStack(alignment: .leading) {
             ZStack(alignment: .topLeading) {
-                Color.gray.opacity(0.1)
-                    .aspectRatio(1, contentMode: .fit)
-                    .cornerRadius(10)
+                AsyncImage(url: URL(string: product.imageUrl)) { image in
+                    image.resizable()
+                } placeholder: {
+                    ProgressView()
+                }
+                .aspectRatio(contentMode: .fill)
+                .frame(height: 150)
+                .clipped()
+                .cornerRadius(10)
                 
-                Text("本月限购 0/1")
+                Text(product.name)
                     .font(.caption)
                     .padding(5)
                     .background(Color.orange.opacity(0.2))
@@ -157,16 +194,16 @@ struct StoreItemView: View {
                     .padding(5)
             }
             
-            Text("【未定事件簿】未名晶片×100")
+            Text(product.description)
                 .font(.caption)
                 .lineLimit(2)
             
             HStack {
-                Text("3000 米游币")
+                Text("\(product.pointsCost) 积分")
                     .foregroundColor(.orange)
                     .font(.caption)
                 Spacer()
-                Text("库存300")
+                Text("库存: \(product.stock)")
                     .font(.caption2)
                     .foregroundColor(.gray)
             }
@@ -174,7 +211,7 @@ struct StoreItemView: View {
             Button(action: {
                 // 兑换操作
             }) {
-                Text("即将开放")
+                Text("购买")
                     .foregroundColor(.white)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
@@ -187,6 +224,55 @@ struct StoreItemView: View {
         .background(Color.white)
         .cornerRadius(10)
         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+    }
+}
+
+struct OrderHistoryView: View {
+    @State private var orders: [TransactionRecord] = []
+    @State private var isLoading = false
+    @State private var errorMessage: ErrorWrapper?
+    
+    struct ErrorWrapper: Identifiable {
+        let id = UUID()
+        let error: String
+    }
+    
+    var body: some View {
+        List {
+            ForEach(orders) { order in
+                VStack(alignment: .leading) {
+                    Text(order.description)
+                        .font(.headline)
+                    Text("类型: \(order.transactionType)")
+                        .font(.subheadline)
+                    Text("金额: \(order.changeAmount)")
+                        .font(.subheadline)
+                }
+            }
+        }
+        .navigationTitle("订单记录")
+        .onAppear(perform: loadOrderHistory)
+        .overlay(Group {
+            if isLoading {
+                ProgressView()
+            }
+        })
+        .alert(item: $errorMessage) { errorWrapper in
+            Alert(title: Text("错误"), message: Text(errorWrapper.error), dismissButton: .default(Text("确定")))
+        }
+    }
+    
+    private func loadOrderHistory() {
+        isLoading = true
+        OrderManager.shared.getOrderHistory { result in
+            isLoading = false
+            switch result {
+            case .success(let response):
+                self.orders = response.data.rows
+            case .failure(let error):
+                self.errorMessage = ErrorWrapper(error: error.localizedDescription)
+            }
+        }
     }
 }
 

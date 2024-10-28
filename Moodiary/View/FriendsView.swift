@@ -25,9 +25,10 @@ struct FriendsView: View {
             VStack(spacing: 20) {
                 headerView()
                 
-                Spacer()
+                // Add PostListView here
+                PostListView()
             }
-            .padding()
+            .padding(.horizontal)
         }
         .navigationTitle("好友关系")
         .sheet(isPresented: $showAddFriendView) {
@@ -40,7 +41,7 @@ struct FriendsView: View {
             PostView(isPresented: $showPostView)
         }
     }
-    
+
     func headerView() -> some View {
         HStack(spacing: 15) {
             headerButton(title: "添加好友", imageName: "person.badge.plus") {

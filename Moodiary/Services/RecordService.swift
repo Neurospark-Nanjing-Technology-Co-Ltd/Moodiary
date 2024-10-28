@@ -11,9 +11,8 @@ import Moya
 import SwiftData
 import SwiftUI
 
-
 enum RecordService {
-    case getRecords(date: Date, tag: String?)
+    case getHistoryTimeRange(start: Date, end: Date)
     case createRecord(content: String, title: String)
 }
 
@@ -24,8 +23,8 @@ extension RecordService: TargetType {
     
     var path: String {
         switch self {
-        case .getRecords:
-            return "/Record/History"
+        case .getHistoryTimeRange:
+            return "/Record/HistoryTimeRange"
         case .createRecord:
             return "/Record/add"
         }
@@ -33,7 +32,7 @@ extension RecordService: TargetType {
     
     var method: Moya.Method {
         switch self {
-        case .getRecords:
+        case .getHistoryTimeRange:
             return .get
         case .createRecord:
             return .post
@@ -42,16 +41,12 @@ extension RecordService: TargetType {
     
     var task: Task {
         switch self {
-        case let .getRecords(date, tag):
-            var formData: [MultipartFormData] = [
-                MultipartFormData(provider: .data(formatDate(date).data(using: .utf8)!), name: "date")
+        case let .getHistoryTimeRange(start, end):
+            let parameters = [
+                "start": formatDateTime(start),
+                "end": formatDateTime(end)
             ]
-            
-            if let tag = tag {
-                formData.append(MultipartFormData(provider: .data(tag.data(using: .utf8)!), name: "tag"))
-            }
-            
-            return .uploadMultipart(formData)
+            return .requestParameters(parameters: parameters, encoding: URLEncoding.queryString)
             
         case let .createRecord(content, title):
             let formData: [MultipartFormData] = [
@@ -72,24 +67,31 @@ extension RecordService: TargetType {
         return headers
     }
     
-    private func formatDate(_ date: Date) -> String {
+    private func formatDateTime(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         return formatter.string(from: date)
     }
-    
-    
 }
 
 class RecordManager {
-    
     static let shared = RecordManager()
     private let provider = MoyaProvider<RecordService>()
     
     private init() {}
     
+    // 辅助方法：获取指定日期的开始和结束时间
+    private func getDayRange(for date: Date) -> (start: Date, end: Date) {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+        let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: date)!
+        return (startOfDay, endOfDay)
+    }
+    
     func getRecords(date: Date, tag: String? = nil, completion: @escaping (Result<[Record], Error>) -> Void) {
-        provider.request(.getRecords(date: date, tag: tag)) { result in
+        let (startOfDay, endOfDay) = getDayRange(for: date)
+        
+        provider.request(.getHistoryTimeRange(start: startOfDay, end: endOfDay)) { result in
             switch result {
             case let .success(response):
                 do {
@@ -100,7 +102,7 @@ class RecordManager {
                         completion(.failure(NSError(domain: "", code: recordResponse.code, userInfo: [NSLocalizedDescriptionKey: recordResponse.message])))
                     }
                 } catch {
-                    print("Decoding error: \(error)")  // 添加更详细的错误日志
+                    print("Decoding error: \(error)")
                     completion(.failure(error))
                 }
             case let .failure(error):

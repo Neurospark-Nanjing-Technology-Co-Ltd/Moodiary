@@ -46,7 +46,7 @@ extension FriendshipService: TargetType {
 }
 
 struct Friend: Codable, Identifiable {
-    let id = UUID()
+    var id = UUID()
     let username: String
     let gender: String
     let email: String

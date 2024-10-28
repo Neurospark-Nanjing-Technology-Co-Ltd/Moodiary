@@ -46,10 +46,16 @@ extension FriendshipService: TargetType {
 }
 
 struct Friend: Codable, Identifiable {
-    var id = UUID()
+    let id = UUID()  // 本地使用的 ID
     let username: String
     let gender: String
     let email: String
+    let password: String?
+    let status: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case username, gender, email, password, status
+    }
 }
 
 struct FriendListResponse: Codable {
@@ -69,9 +75,18 @@ class FriendshipManager {
             switch result {
             case .success(let response):
                 do {
+                    // 添加调试信息
+                    print("Response data: \(String(data: response.data, encoding: .utf8) ?? "Unable to decode")")
+                    
                     let friendListResponse = try JSONDecoder().decode(FriendListResponse.self, from: response.data)
-                    completion(.success(friendListResponse.data))
+                    if friendListResponse.code == 0 {
+                        completion(.success(friendListResponse.data))
+                    } else {
+                        let error = NSError(domain: "", code: friendListResponse.code, userInfo: [NSLocalizedDescriptionKey: friendListResponse.message])
+                        completion(.failure(error))
+                    }
                 } catch {
+                    print("Decoding error: \(error)")
                     completion(.failure(error))
                 }
             case .failure(let error):

@@ -131,18 +131,18 @@ class TrendManager {
         
         // Generate sample word cloud data
         let wordCloud = [
-            WordCloudItem(id: "1", word: "开心", weight: 80),
-            WordCloudItem(id: "2", word: "工作", weight: 60),
-            WordCloudItem(id: "3", word: "疲惫", weight: 40),
-            WordCloudItem(id: "4", word: "家人", weight: 70),
-            WordCloudItem(id: "5", word: "运动", weight: 50)
+            WordCloudItem(id: "1", word: "happy", weight: 80),
+            WordCloudItem(id: "2", word: "work", weight: 60),
+            WordCloudItem(id: "3", word: "tired", weight: 40),
+            WordCloudItem(id: "4", word: "family", weight: 70),
+            WordCloudItem(id: "5", word: "exercise", weight: 50)
         ]
         
         return TrendData(
             moodTrend: moodTrend,
             heatMap: heatMap,
             wordCloud: wordCloud,
-            summary: "[示例数据] 这段时间情绪总体平稳，有起有落。工作压力时有波动，但通过运动和家人陪伴得到了很好的调节。建议继续保持规律作息，适当运动。"
+            summary: "[Example data] During this period, the mood was generally stable, with ups and downs. Work pressure fluctuates, but is well managed through exercise and family company. It is recommended to continue to maintain a regular schedule and exercise appropriately."
         )
     }
 }

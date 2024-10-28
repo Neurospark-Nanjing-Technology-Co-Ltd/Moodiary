@@ -28,15 +28,15 @@ struct StoreView: View {
                         .foregroundColor(.black)
                 }
                 Spacer()
-                Text("商城")
+                Text("")
                     .font(.headline)
                 Spacer()
                 NavigationLink(destination: OrderHistoryView()) {
-                    Text("订单记录")
+                    Text("History")
                         .foregroundColor(.blue)
                 }
                 NavigationLink(destination: AddressListView()) {
-                    Text("地址")
+                    Text("Address")
                         .foregroundColor(.blue)
                 }
             }
@@ -46,7 +46,7 @@ struct StoreView: View {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.gray)
-                TextField("搜索商品", text: $searchText)
+                TextField("Search products", text: $searchText)
                     .foregroundColor(.primary)
                 
                 if !searchText.isEmpty {
@@ -81,7 +81,7 @@ struct StoreView: View {
         .navigationBarHidden(true)
         .onAppear(perform: loadProducts)
         .alert(item: $errorMessage) { errorWrapper in
-            Alert(title: Text("错误"), message: Text(errorWrapper.error), dismissButton: .default(Text("确定")))
+            Alert(title: Text("Error"), message: Text(errorWrapper.error), dismissButton: .default(Text("OK")))
         }
     }
     
@@ -115,7 +115,7 @@ struct AddressListView: View {
             }
             .onDelete(perform: deleteAddress)
         }
-        .navigationTitle("地址列表")
+        .navigationTitle("Address List")
         .onAppear(perform: loadAddresses)
         .overlay(Group {
             if isLoading {
@@ -123,7 +123,7 @@ struct AddressListView: View {
             }
         })
         .alert(isPresented: $showingAlert) {
-            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("确定")))
+            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -147,7 +147,7 @@ struct AddressListView: View {
             case .success(let response):
                 self.addresses = response.data
             case .failure(let error):
-                self.alertTitle = "错误"
+                self.alertTitle = "Error"
                 self.alertMessage = error.localizedDescription
                 self.showingAlert = true
             }
@@ -164,10 +164,10 @@ struct AddressListView: View {
             switch result {
             case .success:
                 addresses.remove(at: index)
-                alertTitle = "成功"
-                alertMessage = "地址已成功删除"
+                alertTitle = "Success"
+                alertMessage = "Address deleted successfully"
             case .failure(let error):
-                alertTitle = "删除失败"
+                alertTitle = "Delete Failed"
                 alertMessage = error.localizedDescription
             }
             showingAlert = true
@@ -190,12 +190,12 @@ struct AddAddressView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("地址信息")) {
-                    TextField("街道", text: $street)
-                    TextField("城市", text: $city)
-                    TextField("州/省", text: $state)
-                    TextField("邮政编码", text: $postalCode)
-                    TextField("国家", text: $country)
+                Section(header: Text("Address Information")) {
+                    TextField("Street", text: $street)
+                    TextField("City", text: $city)
+                    TextField("State/Province", text: $state)
+                    TextField("Postal Code", text: $postalCode)
+                    TextField("Country", text: $country)
                 }
                 
                 if let errorMessage = errorMessage {
@@ -205,10 +205,10 @@ struct AddAddressView: View {
                     }
                 }
             }
-            .navigationTitle("添加地址")
-            .navigationBarItems(leading: Button("取消") {
+            .navigationTitle("Add Address")
+            .navigationBarItems(leading: Button("Cancel") {
                 isPresented = false
-            }, trailing: Button("保存") {
+            }, trailing: Button("Save") {
                 addAddress()
             })
             .disabled(isLoading)
@@ -296,11 +296,11 @@ struct StoreItemView: View {
                 .lineLimit(2)
             
             HStack {
-                Text("\(product.pointsCost) 积分")
+                Text("\(product.pointsCost) Points")
                     .foregroundColor(.orange)
                     .font(.caption)
                 Spacer()
-                Text("库存: \(product.stock)")
+                Text("Stock: \(product.stock)")
                     .font(.caption2)
                     .foregroundColor(.gray)
             }
@@ -308,7 +308,7 @@ struct StoreItemView: View {
             Button(action: {
                 showingPurchaseSheet = true
             }) {
-                Text("购买")
+                Text("Purchase")
                     .foregroundColor(.white)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
@@ -326,7 +326,7 @@ struct StoreItemView: View {
         }
         .onAppear(perform: loadAddresses)
         .alert(isPresented: $showingAlert) {
-            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("确定")))
+            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
     }
     
@@ -343,7 +343,7 @@ struct StoreItemView: View {
     
     private func performPurchase() {
         guard let addressId = selectedAddressId else {
-            errorMessage = "请选择一个地址"
+            errorMessage = "Please select an address"
             return
         }
         
@@ -354,15 +354,15 @@ struct StoreItemView: View {
             case .success(let response):
                 if response.code == 0 {
                     showingPurchaseSheet = false
-                    alertTitle = "购买成功"
-                    alertMessage = "您已成功购买商品，订单号：\(response.data?.orderId ?? 0)"
+                    alertTitle = "Purchase Successful"
+                    alertMessage = "You have successfully purchased the product. Order ID: \(response.data?.orderId ?? 0)"
                 } else {
-                    alertTitle = "购买失败"
+                    alertTitle = "Purchase Failed"
                     alertMessage = response.message
                 }
                 showingAlert = true
             case .failure(let error):
-                alertTitle = "购买失败"
+                alertTitle = "Purchase Failed"
                 alertMessage = error.localizedDescription
                 showingAlert = true
             }
@@ -385,16 +385,16 @@ struct PurchaseView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("商品信息")) {
+                Section(header: Text("Product Information")) {
                     Text(product.name)
-                    Text("单价: \(product.pointsCost) 积分")
-                    Stepper("数量: \(quantity)", value: $quantity, in: 1...product.stock)
-                    Text("总价: \(product.pointsCost * quantity) 积分")
+                    Text("Unit Price: \(product.pointsCost) Points")
+                    Stepper("Quantity: \(quantity)", value: $quantity, in: 1...product.stock)
+                    Text("Total: \(product.pointsCost * quantity) Points")
                 }
                 
-                Section(header: Text("选择地址")) {
-                    Picker("地址", selection: $selectedAddressId) {
-                        Text("请选择地址").tag(nil as Int?)
+                Section(header: Text("Select Address")) {
+                    Picker("Address", selection: $selectedAddressId) {
+                        Text("Please select an address").tag(nil as Int?)
                         ForEach(addresses) { address in
                             Text("\(address.street), \(address.city)").tag(address.id as Int?)
                         }
@@ -408,8 +408,8 @@ struct PurchaseView: View {
                     }
                 }
             }
-            .navigationTitle("确认购买")
-            .navigationBarItems(trailing: Button("购买") {
+            .navigationTitle("Confirm Purchase")
+            .navigationBarItems(trailing: Button("Purchase") {
                 onPurchase()
             })
             .disabled(isLoading)
@@ -420,7 +420,7 @@ struct PurchaseView: View {
             })
         }
         .alert(isPresented: $showingAlert) {
-            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("确定")))
+            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
     }
 }
@@ -441,14 +441,14 @@ struct OrderHistoryView: View {
                 VStack(alignment: .leading) {
                     Text(order.description)
                         .font(.headline)
-                    Text("类型: \(order.transactionType)")
+                    Text("Type: \(order.transactionType)")
                         .font(.subheadline)
-                    Text("金额: \(order.changeAmount)")
+                    Text("Amount: \(order.changeAmount)")
                         .font(.subheadline)
                 }
             }
         }
-        .navigationTitle("订单记录")
+        .navigationTitle("History")
         .onAppear(perform: loadOrderHistory)
         .overlay(Group {
             if isLoading {
@@ -456,7 +456,7 @@ struct OrderHistoryView: View {
             }
         })
         .alert(item: $errorMessage) { errorWrapper in
-            Alert(title: Text("错误"), message: Text(errorWrapper.error), dismissButton: .default(Text("确定")))
+            Alert(title: Text("Error"), message: Text(errorWrapper.error), dismissButton: .default(Text("OK")))
         }
     }
     

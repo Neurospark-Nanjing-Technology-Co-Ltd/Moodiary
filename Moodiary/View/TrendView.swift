@@ -92,8 +92,8 @@ struct TrendView: View {
     
     private func dateSelectionView() -> some View {
         HStack(spacing: 15) {
-            periodButton(for: .month, label: "近一月")
-            periodButton(for: .week, label: "近一周")
+            periodButton(for: .month, label: "last month")
+            periodButton(for: .week, label: "last week")
         }
         .padding()
         .background(Color(UIColor.secondarySystemBackground))
@@ -184,7 +184,7 @@ struct TrendView: View {
     private func formattedDateRange() -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "zh_CN")
-        formatter.dateFormat = "M月d日"
+        formatter.dateFormat = "M-d"
         
         let endDate = Date()
         let startDate: Date
@@ -196,7 +196,7 @@ struct TrendView: View {
             startDate = Calendar.current.date(byAdding: .day, value: -29, to: endDate)!
         }
         
-        return "\(formatter.string(from: startDate)) - \(formatter.string(from: endDate))"
+        return "\(formatter.string(from: startDate)) ~ \(formatter.string(from: endDate))"
     }
     
     private func loadTrendData() {

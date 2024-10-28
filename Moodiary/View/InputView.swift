@@ -27,7 +27,7 @@ struct InputView: View {
             VStack(spacing: 0) {
                 ZStack(alignment: .topLeading) {
                     if thought.isEmpty {
-                        Text(" 现在的想法是...")
+                        Text(" Write down your musings...")
                             .foregroundColor(.gray)
                             .padding(.horizontal, 5)
                             .padding(.top, 8)

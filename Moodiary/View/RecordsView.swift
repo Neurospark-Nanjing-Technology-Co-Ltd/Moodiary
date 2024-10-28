@@ -94,9 +94,9 @@ struct RecordsView: View {
     
     private func dateSelectionView() -> some View {
         HStack(spacing: 15) {
-            dateButton(for: nil, label: "更早")
-            dateButton(for: Calendar.current.date(byAdding: .day, value: -1, to: Date())!, label: "昨天")
-            dateButton(for: Date(), label: "今天")
+            dateButton(for: nil, label: "earlier")
+            dateButton(for: Calendar.current.date(byAdding: .day, value: -1, to: Date())!, label: "yesterday")
+            dateButton(for: Date(), label: "today")
         }
         .padding()
         .background(Color(UIColor.secondarySystemBackground))
@@ -161,7 +161,7 @@ struct RecordsView: View {
     private func formattedDateHeader(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "zh_CN")
-        formatter.dateFormat = "M月d日"
+        formatter.dateFormat = "M-d"
         return formatter.string(from: date)
     }
     
@@ -215,7 +215,7 @@ struct RecordCard: View {
     private func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "zh_CN")
-        formatter.dateFormat = "yyyy年M月d日 HH:mm"
+        formatter.dateFormat = "yyyy-M-d HH:mm"
         return formatter.string(from: date)
     }
 }

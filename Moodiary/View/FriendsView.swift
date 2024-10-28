@@ -30,7 +30,7 @@ struct FriendsView: View {
             }
             .padding(.horizontal)
         }
-        .navigationTitle("好友关系")
+        .navigationTitle("Friends")
         .sheet(isPresented: $showAddFriendView) {
             AddFriendView(isPresented: $showAddFriendView)
         }
@@ -44,15 +44,15 @@ struct FriendsView: View {
 
     func headerView() -> some View {
         HStack(spacing: 15) {
-            headerButton(title: "添加好友", imageName: "person.badge.plus") {
+            headerButton(title: "Add Friend", imageName: "person.badge.plus") {
                 showAddFriendView = true
             }
             
-            headerButton(title: "好友列表", imageName: "person.3") {
+            headerButton(title: "Friend List", imageName: "person.3") {
                 showFriendsList = true
             }
             
-            headerButton(title: "发布朋友圈", imageName: "square.and.pencil") {
+            headerButton(title: "New Post", imageName: "square.and.pencil") {
                 showPostView = true
             }
         }
@@ -98,14 +98,14 @@ struct AddFriendView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
-                TextField("输入好友邮箱", text: $friendEmail)
+                TextField("Enter friend's email", text: $friendEmail)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .autocapitalization(.none)
                     .keyboardType(.emailAddress)
                     .padding(.horizontal)
                 
                 Button(action: addFriend) {
-                    Text("添加")
+                    Text("Add")
                         .foregroundColor(.white)
                         .padding()
                         .background(Color.blue)
@@ -123,12 +123,12 @@ struct AddFriendView: View {
                 }
             }
             .padding()
-            .navigationTitle("添加好友")
-            .navigationBarItems(trailing: Button("取消") {
+            .navigationTitle("Add Friend")
+            .navigationBarItems(trailing: Button("Cancel") {
                 isPresented = false
             })
             .alert(isPresented: $showAlert) {
-                Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("确定")))
+                Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
         }
     }
@@ -141,12 +141,12 @@ struct AddFriendView: View {
             isLoading = false
             switch result {
             case .success:
-                alertTitle = "成功"
-                alertMessage = "已成功添加好友"
+                alertTitle = "Success"
+                alertMessage = "Friend added successfully"
                 showAlert = true
-                friendEmail = "" // 清空输入框
+                friendEmail = ""
             case .failure(let error):
-                alertTitle = "错误"
+                alertTitle = "Error"
                 alertMessage = error.localizedDescription
                 showAlert = true
             }
@@ -172,7 +172,7 @@ struct FriendsListView: View {
                 }
             }
         }
-        .navigationTitle("好友列表")
+        .navigationTitle("Friend List")
         .onAppear(perform: loadFriends)
     }
     
@@ -232,9 +232,9 @@ struct PostView: View {
                     .cornerRadius(8)
                     .padding()
                 
-                Button("发布") {
-                    // 这里添加发布朋友圈的逻辑
-                    print("发布朋友圈：\(postContent)")
+                Button("Post") {
+                    // Add post logic here
+                    print("New post: \(postContent)")
                     isPresented = false
                 }
                 .padding()
@@ -242,8 +242,8 @@ struct PostView: View {
                 .foregroundColor(.white)
                 .cornerRadius(8)
             }
-            .navigationTitle("发布朋友圈")
-            .navigationBarItems(trailing: Button("取消") {
+            .navigationTitle("New Post")
+            .navigationBarItems(trailing: Button("Cancel") {
                 isPresented = false
             })
         }

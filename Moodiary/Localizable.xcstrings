@@ -1,7 +1,10 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    " 现在的想法是..." : {
+    "" : {
+
+    },
+    " Write down your musings..." : {
 
     },
     "%@, %@" : {
@@ -27,13 +30,57 @@
     "%lld" : {
 
     },
+    "%lld Points" : {
+
+    },
     "%lld 积分" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld points"
+          }
+        }
+      }
+    },
+    "Add" : {
+
+    },
+    "Add Address" : {
+
+    },
+    "Add Friend" : {
+
+    },
+    "Address" : {
+
+    },
+    "Address Information" : {
+
+    },
+    "Address List" : {
+
+    },
+    "Amount: %lld" : {
 
     },
     "B" : {
 
     },
+    "Cancel" : {
+
+    },
+    "City" : {
+
+    },
     "Confirm Password" : {
+
+    },
+    "Confirm Purchase" : {
+
+    },
+    "Country" : {
 
     },
     "Create an account" : {
@@ -48,6 +95,21 @@
     "Email" : {
 
     },
+    "Enter friend's email" : {
+
+    },
+    "Error" : {
+
+    },
+    "Friend List" : {
+
+    },
+    "Friends" : {
+
+    },
+    "History" : {
+
+    },
     "Key" : {
       "extractionState" : "manual"
     },
@@ -57,10 +119,64 @@
     "Mood" : {
 
     },
+    "New Post" : {
+
+    },
+    "OK" : {
+
+    },
+    "Order History" : {
+
+    },
     "Password" : {
 
     },
+    "Please select an address" : {
+
+    },
+    "Post" : {
+
+    },
+    "Postal Code" : {
+
+    },
+    "Product Information" : {
+
+    },
+    "Purchase" : {
+
+    },
+    "Quantity: %lld" : {
+
+    },
     "Register" : {
+
+    },
+    "Save" : {
+
+    },
+    "Search products" : {
+
+    },
+    "Select Address" : {
+
+    },
+    "State/Province" : {
+
+    },
+    "Stock: %lld" : {
+
+    },
+    "Street" : {
+
+    },
+    "Total: %lld Points" : {
+
+    },
+    "Type: %@" : {
+
+    },
+    "Unit Price: %lld Points" : {
 
     },
     "Username" : {
@@ -90,6 +206,7 @@
       }
     },
     "保存" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -100,18 +217,50 @@
       }
     },
     "保存失败" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "save failed"
+          }
+        }
+      }
     },
     "单价: %lld 积分" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unit price: %lld points"
+          }
+        }
+      }
     },
     "发布" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "release"
+          }
+        }
+      }
     },
     "发布朋友圈" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "post to Moments"
+          }
+        }
+      }
     },
     "取消" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -122,9 +271,18 @@
       }
     },
     "商品信息" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "product information"
+          }
+        }
+      }
     },
     "商城" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -135,19 +293,59 @@
       }
     },
     "国家" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nation"
+          }
+        }
+      }
     },
     "地址" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "address"
+          }
+        }
+      }
     },
     "地址信息" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "address information"
+          }
+        }
+      }
     },
     "地址列表" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "address list"
+          }
+        }
+      }
     },
     "城市" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "city"
+          }
+        }
+      }
     },
     "多语言" : {
       "localizations" : {
@@ -171,10 +369,26 @@
       }
     },
     "好友关系" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "friendship"
+          }
+        }
+      }
     },
     "好友列表" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "friends list"
+          }
+        }
+      }
     },
     "好友设置" : {
       "extractionState" : "stale",
@@ -188,10 +402,26 @@
       }
     },
     "州/省" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "state"
+          }
+        }
+      }
     },
     "库存: %lld" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "stock"
+          }
+        }
+      }
     },
     "心情变化" : {
       "localizations" : {
@@ -214,10 +444,25 @@
       }
     },
     "总价: %lld 积分" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total price: %lld points"
+          }
+        }
+      }
     },
     "情绪词云" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "emotion word cloud"
+          }
+        }
+      }
     },
     "我的" : {
       "localizations" : {
@@ -240,13 +485,36 @@
       }
     },
     "搜索商品" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "search for products"
+          }
+        }
+      }
     },
     "数量: %lld" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "amount"
+          }
+        }
+      }
     },
     "期间总结" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "period summary"
+          }
+        }
+      }
     },
     "本周总结" : {
       "extractionState" : "stale",
@@ -290,13 +558,37 @@
       }
     },
     "添加" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "add"
+          }
+        }
+      }
     },
     "添加地址" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "add address"
+          }
+        }
+      }
     },
     "添加好友" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "add friends"
+          }
+        }
+      }
     },
     "用户协议" : {
       "localizations" : {
@@ -329,16 +621,48 @@
       }
     },
     "确认购买" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "confirm purchase"
+          }
+        }
+      }
     },
     "类型: %@" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "type"
+          }
+        }
+      }
     },
     "街道" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "street"
+          }
+        }
+      }
     },
     "订单记录" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "record"
+          }
+        }
+      }
     },
     "记录" : {
       "localizations" : {
@@ -381,7 +705,15 @@
       }
     },
     "请选择地址" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "please select an address"
+          }
+        }
+      }
     },
     "账户" : {
       "localizations" : {
@@ -404,7 +736,15 @@
       }
     },
     "购买" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "purchase"
+          }
+        }
+      }
     },
     "趋势" : {
       "localizations" : {
@@ -428,7 +768,15 @@
       }
     },
     "输入好友邮箱" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "enter friend's email"
+          }
+        }
+      }
     },
     "这一天还没有任何记录" : {
       "localizations" : {
@@ -441,7 +789,15 @@
       }
     },
     "选择地址" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "select address"
+          }
+        }
+      }
     },
     "选择日期" : {
       "localizations" : {
@@ -454,10 +810,26 @@
       }
     },
     "邮政编码" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "postal code"
+          }
+        }
+      }
     },
     "金额: %lld" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "amount"
+          }
+        }
+      }
     },
     "错误" : {
       "localizations" : {

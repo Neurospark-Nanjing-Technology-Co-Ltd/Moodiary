@@ -13,6 +13,7 @@ struct TodayView: View {
     @State private var userInput = ""
     @State private var showError = false
     @State private var errorMessage = ""
+    @State private var showingEmotionColorGuide = false
     
     let backgroundGradient = LinearGradient(
         gradient: Gradient(colors: [Color(hex: "F8F9FA"), Color(hex: "E9ECEF")]),
@@ -124,14 +125,21 @@ struct TodayView: View {
     
     func emotionSpectrumView() -> some View {
         componentView(height: 120) {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("心情色谱")
-                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-                    .foregroundColor(.primary)
-                    .padding(.leading)
-                
-                EmotionSpectrum(emotions: viewModel.emotions)
+            Button(action: {
+                showingEmotionColorGuide = true
+            }) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Emotion Spectrum")
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
+                        .foregroundColor(.primary)
+                        .padding(.leading)
+                    
+                    EmotionSpectrum(emotions: viewModel.emotions)
+                }
             }
+        }
+        .sheet(isPresented: $showingEmotionColorGuide) {
+            EmotionColorGuideView()
         }
     }
     
